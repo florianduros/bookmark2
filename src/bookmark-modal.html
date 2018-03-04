@@ -1,0 +1,104 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<dom-module id="bookmark-modal">
+  <template>
+    <style>
+      paper-dialog {
+        width: 400px;
+      }
+
+      paper-input {
+        margin-top: 0;
+      }
+    </style>
+    <paper-dialog id="dialog" modal opened={{opened}}>
+      <h2>[[title]]</h2>
+      <paper-input label="title" value={{bookmark.title}} required  invalid=[[!bookmark.title]]></paper-input>
+      <paper-input label="url" value={{bookmark.url}} required invalid=[[!_validURL]]></paper-input>
+      <paper-input label="author" value={{bookmark.author}}></paper-input>
+      <paper-input label="height" value={{bookmark.height}} type="number"></paper-input>
+      <paper-input label="width" value={{bookmark.width}} type="number"></paper-input>
+      <paper-input label="duration" value={{bookmark.duration}} hidden$=[[!isVimeo(bookmark.url)]]></paper-input>
+      <div class="buttons">
+        <paper-button dialog-dismiss on-click="clear">Cancel</paper-button>
+        <paper-button disabled$=[[!isValid(bookmark.title,_validURL)]] dialog-confirm on-click="clear">Accept</paper-button>
+      </div>
+    </paper-dialog>
+  </template>
+  <script>
+    'use strict'
+
+    class BookmarkModal extends Polymer.Element {
+      static get is () { return 'bookmark-modal' }
+
+      static get properties () {
+        return {
+          /**
+          * Modal title
+          * @type {string}
+          **/
+          title: {
+            type: String
+          },
+
+          /**
+          * Modal opening state
+          * @type {boolean}
+          **/
+          opened: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+          * Bookmark modal data
+          * @type {{ title: string, url: string }}
+          **/
+          bookmark: {
+            type: Object,
+            value: () => ({})
+          },
+
+          /**
+          * True if the bookmark url is vimeo or flickr
+          * @type {boolean}
+          **/
+          _validURL: {
+            type: Boolean,
+            valuel: false
+          }
+        }
+      }
+
+      static get observers () {
+        return [
+          '_urlChanged(bookmark.url)'
+        ]
+      }
+
+      isValid (title, url) {
+        return title && url
+      }
+
+      _urlChanged (url = '') {
+        this.bookmark.isVimeo = this.isVimeo(url)
+        this._validURL = this.bookmark.isVimeo || this.isFlickr(url)
+      }
+
+      isVimeo (url = '') {
+        return url.match(/^https?:\/\/([a-zA-Z\d-]+\.){0,}vimeo\.com.*/) !== null
+      }
+
+      isFlickr (url = '') {
+        return url.match(/^https?:\/\/([a-zA-Z\d-]+\.){0,}flickr\.com.*/) !== null
+      }
+
+      clear () {
+        this.set('bookmark', {})
+      }
+    }
+
+    customElements.define(BookmarkModal.is, BookmarkModal)
+  </script>
+</dom-module>
