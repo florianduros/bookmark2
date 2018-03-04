@@ -1,0 +1,25 @@
+{
+  "name": "bookmark",
+  "version": "0.0.0",
+  "description": "bookmark",
+  "private": true,
+  "scripts": {
+    "start": "polymer serve -H 0.0.0.0 -p 8080",
+    "postinstall": "polymer install",
+    "build": "polymer build",
+    "lint": "polymer lint -i src/bookmark-dispatcher.html && eslint . --ext .js,.html",
+    "test": "polymer test",
+    "start:build": "polymer serve -H 0.0.0.0 -p 8081"
+  },
+  "devDependencies": {
+    "bowser": "^1.9.2",
+    "eslint": "^4.18.2",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-html": "^4.0.2",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "polymer-cli": "^1.6.0"
+  }
+}

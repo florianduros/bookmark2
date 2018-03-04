@@ -1,0 +1,25 @@
+{
+  "extends": "standard",
+  "plugins": [
+    "html"
+  ],
+  "parserOptions": {
+    "sourceType": "script"
+  },
+  "env": {
+    "browser": true,
+    "mocha": true,
+    "node": false
+  },
+  "globals": {
+    "assert": true,
+    "Polymer": true,
+    "PolymerRedux": true,
+    "Redux": true,
+    "fixture": true,
+    "WCT": true
+  },
+  "rules": {
+    "semi": ["error", "never"]
+  }
+}

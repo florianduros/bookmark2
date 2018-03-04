@@ -1,0 +1,17 @@
+{
+  "name": "bookmark",
+  "description": "bookmark",
+  "main": "index.html",
+  "dependencies": {
+    "polymer": "^2.5.0",
+    "redux": "https://npmcdn.com/redux@3.7.2/dist/redux.min.js",
+    "polymer-redux": "^1.0.5"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "web-component-tester": "^6.3.0"
+  },
+  "resolutions": {
+    "chai": "4.1.2"
+  }
+}

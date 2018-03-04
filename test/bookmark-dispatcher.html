@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>bookmark-dispatcher test</title>
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../src/bookmark-dispatcher.html">
+  </head>
+  <body>
+    <test-fixture id="simple">
+      <template>
+        <bookmark-dispatcher></bookmark-dispatcher>
+      </template>
+    </test-fixture>
+    <script>
+      'use strict'
+
+      suite('store', () => {
+        const titleA = { title: 'titleA', id: 0 }
+        const titleB = { title: 'titleB', id: 1 }
+        const titleC = { title: 'titleC', id: 2 }
+        const addBookmarks = dispatcher => {
+          dispatcher.dispatch('addBookmark', titleC)
+          dispatcher.dispatch('addBookmark', titleB)
+          dispatcher.dispatch('addBookmark', titleA)
+        }
+
+        setup(() => {
+          fixture('simple').dispatch('reset')
+        })
+
+        test('initial state', () => {
+          assert.deepEqual(fixture('simple').getState(), { bookmarks: [] })
+        })
+
+        test('add bookmarks', () => {
+          const dispatcher = fixture('simple')
+          dispatcher.dispatch('addBookmark', titleA)
+          assert.deepEqual(dispatcher.getState(), { bookmarks: [titleA] })
+          dispatcher.dispatch('addBookmark', titleB)
+          assert.deepEqual(dispatcher.getState(), { bookmarks: [titleA, titleB] })
+        })
+
+        test('sort on bookmark adding', () => {
+          const dispatcher = fixture('simple')
+          addBookmarks(dispatcher)
+          assert.deepEqual(dispatcher.getState(), { bookmarks: [titleA, titleB, titleC] })
+        })
+
+        test('remove unknown bookmark', () => {
+          const dispatcher = fixture('simple')
+          addBookmarks(dispatcher)
+          dispatcher.dispatch('removeBookmark', 3)
+          assert.deepEqual(dispatcher.getState(), { bookmarks: [titleA, titleB, titleC] })
+        })
+
+        test('remove bookmarks', () => {
+          const dispatcher = fixture('simple')
+          addBookmarks(dispatcher)
+          dispatcher.dispatch('removeBookmark', 1)
+          assert.deepEqual(dispatcher.getState(), { bookmarks: [titleA, titleC] })
+          dispatcher.dispatch('removeBookmark', 0)
+          dispatcher.dispatch('removeBookmark', 2)
+          assert.deepEqual(dispatcher.getState(), { bookmarks: [] })
+        })
+
+        test('set unknown bookmarks', () => {
+          const dispatcher = fixture('simple')
+          addBookmarks(dispatcher)
+          dispatcher.dispatch('setBookmark', { id: 4, title: 'titleD' })
+          assert.deepEqual(dispatcher.getState(), { bookmarks: [titleA, titleB, titleC] })
+        })
+
+        test('set bookmarks', () => {
+          const dispatcher = fixture('simple')
+          const titleD = { id: 0, title: 'titleD' }
+          const title = { id: 1, title: 'title' }
+          addBookmarks(dispatcher)
+          dispatcher.dispatch('setBookmark', titleD)
+          assert.deepEqual(dispatcher.getState(), { bookmarks: [titleB, titleC, titleD] })
+          dispatcher.dispatch('setBookmark', title)
+          assert.deepEqual(dispatcher.getState(), { bookmarks: [title, titleC, titleD] })
+        })
+      })
+    </script>
+  </body>
+</html>
