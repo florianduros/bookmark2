@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>bookmark-modal test</title>
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../src/bookmark-modal.html">
+  </head>
+  <body>
+    <test-fixture id="modal">
+      <template>
+        <bookmark-modal></bookmark-modal>
+      </template>
+    </test-fixture>
+    <script>
+      'use strict'
+
+      suite('open and close', () => {
+        test('closed by default', () => {
+          const modal = fixture('modal')
+          assert.isFalse(modal.opened, false)
+          assert.isFalse(modal.shadowRoot.querySelector('paper-dialog').opened, false)
+        })
+
+        test('opened by binding', () => {
+          const modal = fixture('modal')
+          modal.opened = true
+          assert.isTrue(modal.opened, true)
+          assert.isTrue(modal.shadowRoot.querySelector('paper-dialog').opened, true)
+        })
+
+        test('closed by binding', () => {
+          const modal = fixture('modal')
+          modal.opened = true
+          modal.opened = false
+          assert.isFalse(modal.opened, false)
+          assert.isFalse(modal.shadowRoot.querySelector('paper-dialog').opened, false)
+        })
+
+        test('closed by click on close button', () => {
+          const modal = fixture('modal')
+          modal.opened = true
+          modal.shadowRoot.querySelectorAll('paper-button')[1].click()
+          assert.isFalse(modal.opened, false)
+          assert.isFalse(modal.shadowRoot.querySelector('paper-dialog').opened, false)
+        })
+
+        test('clear data on closing', () => {
+          const modal = fixture('modal')
+          modal.opened = true
+          modal.bookmark = { title: 'a title', url: 'https://vimeo.com/250953833' }
+          modal.shadowRoot.querySelectorAll('paper-button')[1].click()
+          assert.deepEqual(modal.bookmark, { isVimeo: false })
+          assert.isFalse(modal._validURL)
+        })
+      })
+
+      suite('modal title', () => {
+        test('default', () => {
+          const modal = fixture('modal')
+          assert.equal(modal.shadowRoot.querySelector('h2').innerHTML, ' ')
+        })
+
+        test('content', () => {
+          const modal = fixture('modal')
+          modal.title = 'a title'
+          assert.equal(modal.shadowRoot.querySelector('h2').innerHTML, 'a title')
+        })
+      })
+
+      suite('URL and title validation', () => {
+        test('default', () => {
+          const modal = fixture('modal')
+          assert.isFalse(modal._validURL)
+          assert.isFalse(modal.bookmark.isVimeo)
+          const [title, url] = modal.shadowRoot.querySelectorAll('paper-input')
+          assert.isTrue(title.invalid)
+          assert.isTrue(url.invalid)
+        })
+
+        test('empty', () => {
+          const modal = fixture('modal')
+          modal.set('bookmark', { title: '', url: '' })
+          assert.isFalse(modal._validURL)
+          assert.isFalse(modal.bookmark.isVimeo)
+          const [title, url] = modal.shadowRoot.querySelectorAll('paper-input')
+          assert.isTrue(title.invalid)
+          assert.isTrue(url.invalid)
+        })
+
+        test('invalid', () => {
+          const modal = fixture('modal')
+          modal.set('bookmark', { title: '', url: '' })
+          assert.isFalse(modal._validURL)
+          assert.isFalse(modal.bookmark.isVimeo)
+          const [title, url] = modal.shadowRoot.querySelectorAll('paper-input')
+          assert.isTrue(title.invalid)
+          assert.isTrue(url.invalid)
+        })
+
+        test('vimeo', () => {
+          const modal = fixture('modal')
+          modal.set('bookmark', { title: 'title', url: 'http://vimeo.com/12345' })
+          assert.isTrue(modal._validURL)
+          assert.isTrue(modal.bookmark.isVimeo)
+          const [title, url] = modal.shadowRoot.querySelectorAll('paper-input')
+          assert.isFalse(title.invalid)
+          assert.isFalse(url.invalid)
+        })
+
+        test('flickr', () => {
+          const modal = fixture('modal')
+          modal.set('bookmark', { title: 'title', url: 'http://flickr.com/12345' })
+          assert.isTrue(modal._validURL)
+          assert.isFalse(modal.bookmark.isVimeo)
+          const [title, url] = modal.shadowRoot.querySelectorAll('paper-input')
+          assert.isFalse(title.invalid)
+          assert.isFalse(url.invalid)
+        })
+      })
+
+      suite('URL recognition', () => {
+        const testURL = (method, name) => {
+          const modal = fixture('modal')
+          assert.isFalse(modal[method](''))
+          assert.isFalse(modal[method]('http://random/random'))
+          assert.isFalse(modal[method](`http://${name}/12345`))
+          assert.isFalse(modal[method](`http://${name}.co/12345`))
+          assert.isTrue(modal[method](`http://${name}.com/12345`))
+          assert.isTrue(modal[method](`http://${name}.com/12345/12345`))
+          assert.isTrue(modal[method](`https://${name}.com/12345`))
+          assert.isTrue(modal[method](`https://${name}.com/12345/12345`))
+        }
+
+        test('_isVimeo', () => testURL('_isVimeo', 'vimeo'))
+        test('_isFlickr', () => testURL('_isFlickr', 'flickr'))
+      })
+
+      suite('duration input', () => {
+        test('default', () => {
+          const modal = fixture('modal')
+          assert.isNotNull(modal.shadowRoot.querySelectorAll('paper-input')[5].getAttribute('hidden'))
+        })
+
+        test('not vimeo', () => {
+          const modal = fixture('modal')
+          modal.set('bookmark', { title: 'title', url: 'http://flickr.com/12345' })
+          assert.isNotNull(modal.shadowRoot.querySelectorAll('paper-input')[5].getAttribute('hidden'))
+        })
+
+        test('is vimeo', () => {
+          const modal = fixture('modal')
+          modal.set('bookmark', { title: 'title', url: 'http://vimeo.com/12345' })
+          assert.isNull(modal.shadowRoot.querySelectorAll('paper-input')[5].getAttribute('hidden'))
+        })
+      })
+
+      suite('submit button', () => {
+        test('default', () => {
+          const modal = fixture('modal')
+          assert.isNotNull(modal.shadowRoot.querySelectorAll('paper-button')[1].getAttribute('disabled'))
+        })
+
+        test('button is not disabled', () => {
+          const modal = fixture('modal')
+          modal.set('bookmark', { title: 'title', url: 'http://flickr.com/12345' })
+          assert.isNull(modal.shadowRoot.querySelectorAll('paper-button')[1].getAttribute('disabled'))
+        })
+
+        test('fire event on click', done => {
+          const modal = fixture('modal')
+          modal.set('bookmark', { title: 'title', url: 'http://flickr.com/12345' })
+          Promise.race([
+            new Promise((resolve, reject) => setTimeout(reject, 500)),
+            new Promise(resolve => modal.addEventListener('submit-bookmark', resolve))
+          ])
+            .then(({ detail }) => {
+              assert.deepEqual(detail, { title: 'title', url: 'http://flickr.com/12345', isVimeo: false })
+              done()
+            })
+            .catch(() => done('button doesnt fire event'))
+          modal.shadowRoot.querySelectorAll('paper-button')[1].click()
+        })
+      })
+
+      suite('input binding', () => {
+        test('default', () => {
+          const modal = fixture('modal')
+          assert.deepEqual(modal.bookmark, { isVimeo: false })
+        })
+
+        test('all input', (done) => {
+          const modal = fixture('modal')
+          const bookmark = { title: 'a title', url: 'http://vimeo.com/12345', author: 'an author', width: 15, height: 20, duration: 10 }
+          const values = Object.values(bookmark)
+          modal.shadowRoot.querySelectorAll('paper-input').forEach((input, index) => { input.value = values[index] })
+          modal.addEventListener('submit-bookmark', ({ detail }) => {
+            assert.deepEqual(modal.bookmark, Object.assign(bookmark, { isVimeo: true }))
+            done()
+          })
+          modal.shadowRoot.querySelectorAll('paper-button')[1].click()
+        })
+      })
+    </script>
+  </body>
+</html>

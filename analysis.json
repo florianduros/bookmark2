@@ -1,0 +1,431 @@
+{
+  "schema_version": "1.0.0",
+  "elements": [
+    {
+      "description": "Modal to edit bookmark information\n\n```\n<bookmark-modal opened bookmark=[[bookmark]]></bookmark-modal>\n```",
+      "summary": "",
+      "path": "src\\bookmark-modal.html",
+      "properties": [
+        {
+          "name": "title",
+          "type": "string",
+          "description": "Modal title",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 52,
+              "column": 10
+            },
+            "end": {
+              "line": 54,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "opened",
+          "type": "boolean",
+          "description": "Modal opening state",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 60,
+              "column": 10
+            },
+            "end": {
+              "line": 63,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "false"
+        },
+        {
+          "name": "bookmark",
+          "type": "{title: string, url: string, author: string, width: integer, height: integer, duration: integer}",
+          "description": "Bookmark modal data",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 69,
+              "column": 10
+            },
+            "end": {
+              "line": 72,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "{}"
+        },
+        {
+          "name": "_validURL",
+          "type": "boolean",
+          "description": "True if the bookmark url is vimeo or flickr",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 78,
+              "column": 10
+            },
+            "end": {
+              "line": 81,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "_openedChanged",
+          "description": "Listener on the opened property",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 96,
+              "column": 6
+            },
+            "end": {
+              "line": 100,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "opened",
+              "type": "boolean"
+            }
+          ]
+        },
+        {
+          "name": "_urlChanged",
+          "description": "Listener on the url property\nSet to true the `bookmark.isVimeo` property if the url is from vimeo\nSet to true the `_validURL` property if the url is from vimeo or flickr",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 108,
+              "column": 6
+            },
+            "end": {
+              "line": 111,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "url",
+              "type": "string",
+              "defaultValue": "''"
+            }
+          ]
+        },
+        {
+          "name": "_isVimeo",
+          "description": "Return true if the url is from vimeo",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 118,
+              "column": 6
+            },
+            "end": {
+              "line": 120,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "url",
+              "type": "string",
+              "defaultValue": "''"
+            }
+          ],
+          "return": {
+            "type": "boolean"
+          }
+        },
+        {
+          "name": "_isFlickr",
+          "description": "Return true if the url is from flickr",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 127,
+              "column": 6
+            },
+            "end": {
+              "line": 129,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "url",
+              "type": "string",
+              "defaultValue": "''"
+            }
+          ],
+          "return": {
+            "type": "boolean"
+          }
+        },
+        {
+          "name": "_isValid",
+          "description": "Return true if title && url",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 137,
+              "column": 6
+            },
+            "end": {
+              "line": 139,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "title",
+              "type": "string"
+            },
+            {
+              "name": "url",
+              "type": "url"
+            }
+          ],
+          "return": {
+            "type": "boolean"
+          }
+        },
+        {
+          "name": "_submit",
+          "description": "Fire the `submit-bookmark` event with the bookmark as content\nThe `width`, `height` and `duration` properties are cast to integer\nClose the modal",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 146,
+              "column": 6
+            },
+            "end": {
+              "line": 158,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": []
+        }
+      ],
+      "staticMethods": [],
+      "demos": [
+        {
+          "url": "demo/bookmark-modal.html",
+          "description": ""
+        }
+      ],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 43,
+          "column": 4
+        },
+        "end": {
+          "line": 159,
+          "column": 5
+        }
+      },
+      "privacy": "public",
+      "superclass": "HTMLElement",
+      "name": "BookmarkModal",
+      "attributes": [
+        {
+          "name": "title",
+          "description": "Modal title",
+          "sourceRange": {
+            "start": {
+              "line": 52,
+              "column": 10
+            },
+            "end": {
+              "line": 54,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "opened",
+          "description": "Modal opening state",
+          "sourceRange": {
+            "start": {
+              "line": 60,
+              "column": 10
+            },
+            "end": {
+              "line": 63,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "bookmark",
+          "description": "Bookmark modal data",
+          "sourceRange": {
+            "start": {
+              "line": 69,
+              "column": 10
+            },
+            "end": {
+              "line": 72,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "{title: string, url: string, author: string, width: integer, height: integer, duration: integer}"
+        }
+      ],
+      "events": [],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [],
+      "tagname": "bookmark-modal"
+    },
+    {
+      "description": "Implements the redux store logic\n\n```javascript\nconst reducer = (state = initialState, { type, message }) => {\n switch (type) {\n   case 'RESET':\n     return initialState\n   case 'ADD_BOOKMARK':\n     return Object.assign({}, state, { bookmarks: sort([...state.bookmarks].concat(message)) })\n   case 'REMOVE_BOOKMARK':\n     return Object.assign({}, state, { bookmarks: state.bookmarks.filter(({ id }) => id !== message) })\n   case 'SET_BOOKMARK':\n     return Object.assign({}, state, { bookmarks: sort(state.bookmarks.map(bookmark => bookmark.id === message.id ? Object.assign({}, bookmark, message) : bookmark)) })\n   default:\n     return state\n }\n}\n```",
+      "summary": "",
+      "path": "src\\bookmark-dispatcher.html",
+      "properties": [],
+      "methods": [
+        {
+          "name": "connectedCallback",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "..\\bower_components\\polymer-redux\\dist\\polymer-redux.html",
+            "start": {
+              "line": 167,
+              "column": 3
+            },
+            "end": {
+              "line": 171,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "inheritedFrom": "ReduxMixin"
+        },
+        {
+          "name": "disconnectedCallback",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "..\\bower_components\\polymer-redux\\dist\\polymer-redux.html",
+            "start": {
+              "line": 173,
+              "column": 3
+            },
+            "end": {
+              "line": 176,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "inheritedFrom": "ReduxMixin"
+        },
+        {
+          "name": "dispatch",
+          "description": "Dispatches an action to the Redux store.",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "..\\bower_components\\polymer-redux\\dist\\polymer-redux.html",
+            "start": {
+              "line": 195,
+              "column": 3
+            },
+            "end": {
+              "line": 237,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "Object",
+            "desc": "The action."
+          },
+          "inheritedFrom": "ReduxMixin"
+        },
+        {
+          "name": "getState",
+          "description": "Gets the current state in the Redux store.",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "..\\bower_components\\polymer-redux\\dist\\polymer-redux.html",
+            "start": {
+              "line": 244,
+              "column": 3
+            },
+            "end": {
+              "line": 246,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "*"
+          },
+          "inheritedFrom": "ReduxMixin"
+        }
+      ],
+      "staticMethods": [],
+      "demos": [],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 56,
+          "column": 4
+        },
+        "end": {
+          "line": 67,
+          "column": 5
+        }
+      },
+      "privacy": "public",
+      "superclass": "HTMLElement",
+      "name": "BookmarkDispatcher",
+      "attributes": [],
+      "events": [],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [],
+      "tagname": "bookmark-dispatcher",
+      "mixins": [
+        "ReduxMixin"
+      ]
+    }
+  ]
+}

@@ -11,6 +11,7 @@
 
     const initialState = { bookmarks: [] }
 
+    // Sort the bookmark with the title as comparator
     const sort = bookmarks => bookmarks.sort(({ title: titleA }, { title: titleB }) => titleA.localeCompare(titleB))
     const reducer = (state = initialState, { type, message }) => {
       switch (type) {
@@ -30,6 +31,29 @@
     const store = Redux.createStore(reducer, initialState, Redux.compose(window.devToolsExtension ? window.devToolsExtension() : v => v))
     const ReduxMixin = PolymerRedux(store)
 
+    /**
+    * Implements the redux store logic
+    *
+    * ```javascript
+    * const reducer = (state = initialState, { type, message }) => {
+    *  switch (type) {
+    *    case 'RESET':
+    *      return initialState
+    *    case 'ADD_BOOKMARK':
+    *      return Object.assign({}, state, { bookmarks: sort([...state.bookmarks].concat(message)) })
+    *    case 'REMOVE_BOOKMARK':
+    *      return Object.assign({}, state, { bookmarks: state.bookmarks.filter(({ id }) => id !== message) })
+    *    case 'SET_BOOKMARK':
+    *      return Object.assign({}, state, { bookmarks: sort(state.bookmarks.map(bookmark => bookmark.id === message.id ? Object.assign({}, bookmark, message) : bookmark)) })
+    *    default:
+    *      return state
+    *  }
+    * }
+    * ```
+    * @customElement
+    * @polymer
+    * @appliesMixin ReduxMixin
+    */
     class BookmarkDispatcher extends ReduxMixin(Polymer.Element) {
       static get is () { return 'bookmark-dispatcher' }
 

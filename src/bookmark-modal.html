@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <dom-module id="bookmark-modal">
   <template>
     <style>
@@ -14,21 +15,32 @@
     </style>
     <paper-dialog id="dialog" modal opened={{opened}}>
       <h2>[[title]]</h2>
-      <paper-input label="title" value={{bookmark.title}} required  invalid=[[!bookmark.title]]></paper-input>
-      <paper-input label="url" value={{bookmark.url}} required invalid=[[!_validURL]]></paper-input>
+      <paper-input label="title" value={{bookmark.title}} required invalid$=[[!bookmark.title]]></paper-input>
+      <paper-input label="url" value={{bookmark.url}} required invalid$=[[!_validURL]]></paper-input>
       <paper-input label="author" value={{bookmark.author}}></paper-input>
-      <paper-input label="height" value={{bookmark.height}} type="number"></paper-input>
-      <paper-input label="width" value={{bookmark.width}} type="number"></paper-input>
-      <paper-input label="duration" value={{bookmark.duration}} hidden$=[[!isVimeo(bookmark.url)]]></paper-input>
+      <paper-input label="width" value={{bookmark.width}} type="number" allowed-pattern="\d"></paper-input>
+      <paper-input label="height" value={{bookmark.height}} type="number" allowed-pattern="\d"></paper-input>
+      <paper-input label="duration" value={{bookmark.duration}} hidden$=[[!bookmark.isVimeo]] allowed-pattern="\d"></paper-input>
       <div class="buttons">
-        <paper-button dialog-dismiss on-click="clear">Cancel</paper-button>
-        <paper-button disabled$=[[!isValid(bookmark.title,_validURL)]] dialog-confirm on-click="clear">Accept</paper-button>
+        <paper-button dialog-dismiss>Cancel</paper-button>
+        <paper-button disabled$=[[!_isValid(bookmark.title,_validURL)]] on-click="_submit">Accept</paper-button>
       </div>
     </paper-dialog>
   </template>
   <script>
     'use strict'
 
+    /**
+    * Modal to edit bookmark information
+    *
+    * ```
+    * <bookmark-modal opened bookmark=[[bookmark]]></bookmark-modal>
+    * ```
+    * @customElement
+    * @polymer
+    * @extends {Polymer.Element}
+    * @demo demo/bookmark-modal.html
+    */
     class BookmarkModal extends Polymer.Element {
       static get is () { return 'bookmark-modal' }
 
@@ -53,7 +65,7 @@
 
           /**
           * Bookmark modal data
-          * @type {{ title: string, url: string }}
+          * @type {{ title: string, url: string, author: string, width: integer, height: integer, duration: integer }}
           **/
           bookmark: {
             type: Object,
@@ -73,29 +85,77 @@
 
       static get observers () {
         return [
+          '_openedChanged(opened)',
           '_urlChanged(bookmark.url)'
         ]
       }
 
-      isValid (title, url) {
-        return title && url
+      /**
+      * Listener on the opened property
+      * @param {boolean} opened
+      */
+      _openedChanged (opened) {
+        if (!opened) {
+          this.set('bookmark', {})
+        }
       }
 
+      /**
+      * Listener on the url property
+      * Set to true the `bookmark.isVimeo` property if the url is from vimeo
+      * Set to true the `_validURL` property if the url is from vimeo or flickr
+      * @param {string} url
+      */
       _urlChanged (url = '') {
-        this.bookmark.isVimeo = this.isVimeo(url)
-        this._validURL = this.bookmark.isVimeo || this.isFlickr(url)
+        this.set('bookmark.isVimeo', this._isVimeo(url))
+        this.set('_validURL', this.bookmark.isVimeo || this._isFlickr(url))
       }
 
-      isVimeo (url = '') {
+      /**
+      * Return true if the url is from vimeo
+      * @param {string} url
+      * @return {boolean}
+      */
+      _isVimeo (url = '') {
         return url.match(/^https?:\/\/([a-zA-Z\d-]+\.){0,}vimeo\.com.*/) !== null
       }
 
-      isFlickr (url = '') {
+      /**
+      * Return true if the url is from flickr
+      * @param {string} url
+      * @return {boolean}
+      */
+      _isFlickr (url = '') {
         return url.match(/^https?:\/\/([a-zA-Z\d-]+\.){0,}flickr\.com.*/) !== null
       }
 
-      clear () {
-        this.set('bookmark', {})
+      /**
+      * Return true if title && url
+      * @param {string} title
+      * @param {url} url
+      * @return {boolean}
+      */
+      _isValid (title, url) {
+        return title && url
+      }
+
+      /**
+      * Fire the `submit-bookmark` event with the bookmark as content
+      * The `width`, `height` and `duration` properties are cast to integer
+      * Close the modal
+      */
+      _submit () {
+        const _bookmark = Object.assign({}, this.bookmark)
+        const keys = ['width', 'height', 'duration']
+        // the paper-input component cast the number to a string value
+        // we force the cast to an integer
+        keys.forEach(key => {
+          if (key in _bookmark) {
+            _bookmark[key] = parseInt(_bookmark[key])
+          }
+        })
+        this.dispatchEvent(new CustomEvent('submit-bookmark', { detail: _bookmark }))
+        this.set('opened', false)
       }
     }
 

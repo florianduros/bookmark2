@@ -27,6 +27,7 @@
 
               const demo = document.querySelector('#demo')
               demo.$.button.addEventListener('click', () => { demo.$.modal.opened = true })
+              demo.$.modal.addEventListener('submit-bookmark', ({ detail }) => console.log('bookmark', detail))
             </script>
           </template>
         </dom-bind>
