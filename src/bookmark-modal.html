@@ -154,8 +154,8 @@
             _bookmark[key] = parseInt(_bookmark[key])
           }
         })
-        this.dispatchEvent(new CustomEvent('submit-bookmark', { detail: _bookmark }))
         this.set('opened', false)
+        this.dispatchEvent(new CustomEvent('submit-bookmark', { detail: _bookmark }))
       }
     }
 

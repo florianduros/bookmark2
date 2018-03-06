@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
     <title>bookmark</title>
+    <base href="/">
     <meta name="description" content="bookmark">
 
     <!-- See https://goo.gl/OOhYW5 -->
     <link rel="manifest" href="manifest.json">
 
-    <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-    <link rel="import" href="bower_components/polymer/polymer-element.html">
+    <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+    <link rel="import" href="src/bookmark-app.html">
   </head>
   <style>
     html, body {
@@ -19,8 +20,10 @@
     }
     body {
       margin: 0;
+      font-family: 'Roboto', 'Noto', sans-serif;
     }
   </style>
   <body>
+    <bookmark-app></bookmark-app>
   </body>
 </html>

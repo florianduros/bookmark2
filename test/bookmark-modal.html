@@ -17,6 +17,11 @@
         <bookmark-modal></bookmark-modal>
       </template>
     </test-fixture>
+    <test-fixture id="edit">
+      <template>
+        <bookmark-modal bookmark='{ "title": "a title", "url": "https://vimeo.com/250953833", "author": "an author", "height": 10 }'></bookmark-modal>
+      </template>
+    </test-fixture>
     <script>
       'use strict'
 
@@ -95,7 +100,7 @@
 
         test('invalid', () => {
           const modal = fixture('modal')
-          modal.set('bookmark', { title: '', url: '' })
+          modal.set('bookmark', { url: 'http://invalid.com/12345' })
           assert.isFalse(modal._validURL)
           assert.isFalse(modal.bookmark.isVimeo)
           const [title, url] = modal.shadowRoot.querySelectorAll('paper-input')
@@ -174,16 +179,17 @@
 
         test('fire event on click', done => {
           const modal = fixture('modal')
-          modal.set('bookmark', { title: 'title', url: 'http://flickr.com/12345' })
-          Promise.race([
-            new Promise((resolve, reject) => setTimeout(reject, 500)),
-            new Promise(resolve => modal.addEventListener('submit-bookmark', resolve))
-          ])
+          const bookmark = { title: 'a title', url: 'https://vimeo.com/250953833', author: 'an author', height: 10, isVimeo: true }
+          modal.opened = true
+          modal.bookmark = {...bookmark}
+          // the unresolved promise case is handled by the test timeout
+          new Promise(resolve => modal.addEventListener('submit-bookmark', resolve))
             .then(({ detail }) => {
-              assert.deepEqual(detail, { title: 'title', url: 'http://flickr.com/12345', isVimeo: false })
+              assert.deepEqual(detail, bookmark)
+              assert.deepEqual(modal.bookmark, { isVimeo: false })
               done()
             })
-            .catch(() => done('button doesnt fire event'))
+            .catch(done)
           modal.shadowRoot.querySelectorAll('paper-button')[1].click()
         })
       })
@@ -196,11 +202,12 @@
 
         test('all input', (done) => {
           const modal = fixture('modal')
+          modal.opened = true
           const bookmark = { title: 'a title', url: 'http://vimeo.com/12345', author: 'an author', width: 15, height: 20, duration: 10 }
           const values = Object.values(bookmark)
           modal.shadowRoot.querySelectorAll('paper-input').forEach((input, index) => { input.value = values[index] })
           modal.addEventListener('submit-bookmark', ({ detail }) => {
-            assert.deepEqual(modal.bookmark, Object.assign(bookmark, { isVimeo: true }))
+            assert.deepEqual(detail, Object.assign(bookmark, { isVimeo: true }))
             done()
           })
           modal.shadowRoot.querySelectorAll('paper-button')[1].click()
