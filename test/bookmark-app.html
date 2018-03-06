@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>bookmark-app test</title>
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../src/bookmark-app.html">
+  </head>
+  <body>
+    <test-fixture id="app">
+      <template>
+        <bookmark-app></bookmark-app>
+      </template>
+    </test-fixture>
+    <script>
+      'use strict'
+
+      suite('app', () => {
+        test('default', () => {
+          const app = fixture('app')
+          assert.equal(app.page, 'table')
+          assert.equal(app.title, 'Table')
+          assert.equal(app.$.views.selected, 'table')
+          assert.equal(app.shadowRoot.querySelector('iron-selector').selected, 'table')
+          assert.isFalse(app.$.modal.opened)
+        })
+
+        test('select', () => {
+          const app = fixture('app')
+          app.shadowRoot.querySelector('iron-selector').selected = 'list'
+          assert.equal(app.page, 'list')
+          assert.equal(app.title, 'List')
+          assert.equal(app.$.views.selected, 'list')
+          app.shadowRoot.querySelector('iron-selector').selected = 'table'
+          assert.equal(app.page, 'table')
+          assert.equal(app.title, 'Table')
+          assert.equal(app.$.views.selected, 'table')
+        })
+
+        test('open modal on button click', () => {
+          const app = fixture('app')
+          app.shadowRoot.querySelector('paper-fab').click()
+          assert.isTrue(app.$.modal.opened)
+        })
+
+        test('add bookmark', () => {
+          replace('bookmark-modal').with('fake-bookmark-modal')
+          const bookmark = { title: 'a title', url: 'https://vimeo.com/250953833', author: 'an author', height: 10, isVimeo: true }
+          const app = fixture('app')
+          app.shadowRoot.querySelector('fake-bookmark-modal')
+            .dispatchEvent(new CustomEvent('submit-bookmark', { detail: bookmark }))
+          assert.deepEqual(app.getState().bookmarks, [bookmark])
+        })
+      })
+    </script>
+  </body>
+</html>

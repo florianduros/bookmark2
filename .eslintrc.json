@@ -15,9 +15,11 @@
     "assert": true,
     "Polymer": true,
     "PolymerRedux": true,
+    "replace": true,
     "Redux": true,
     "fixture": true,
-    "WCT": true
+    "WCT": true,
+    "BookmarkDispatcher": true
   },
   "rules": {
     "semi": ["error", "never"]

@@ -9,7 +9,11 @@
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="bookmark-dispatcher.html">
+<link rel="import" href="bookmark-modal.html">
 
 <dom-module id="bookmark-app">
   <template>
@@ -49,6 +53,12 @@
         color: white;
       }
 
+      paper-fab {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+      }
+
     </style>
 
     <app-drawer-layout fullbleed narrow="{{narrow}}">
@@ -79,13 +89,15 @@
             role="main">
             <span name="table">table</span>
             <span name="list">list</span>
+            <span name="view404">Unable to display the bookmarks</span>
           </iron-pages>
+          <paper-fab icon="add" on-click="openModal"></paper-fab>
         </app-header-layout>
       </app-drawer-layout>
-
+      <bookmark-modal id="modal" on-submit-bookmark="addBookmark"></bookmark-modal>
   </template>
   <script>
-    class BookmarkApp extends Polymer.Element {
+    class BookmarkApp extends BookmarkDispatcher {
       static get is () {
         return 'bookmark-app'
       }
@@ -108,17 +120,18 @@
 
       _pageChanged (page) {
         this.title = page === 'table' ? 'Table' : 'List'
-        // Load page import on demand. Show 404 page if fails
-        /*var resolvedPageUrl = this.resolveUrl(`bookmark-${page}.html`)
-        Polymer.importHref(
-          resolvedPageUrl,
-          null,
-          this._showPage404.bind(this),
-          true)*/
       }
 
       _showPage404 () {
         this.page = 'view404'
+      }
+
+      openModal () {
+        this.$.modal.opened = true
+      }
+
+      addBookmark ({ detail: bookmark }) {
+        this.dispatch('addBookmark', bookmark)
       }
     }
     window.customElements.define(BookmarkApp.is, BookmarkApp)

@@ -8,7 +8,7 @@
     "postinstall": "polymer install",
     "build": "polymer build",
     "doc": "polymer analyze > analysis.json",
-    "lint": "polymer lint -i src/bookmark-dispatcher.html src/bookmark-modal.html && eslint . --ext .js,.html",
+    "lint": "polymer lint -i src/bookmark-dispatcher.html src/bookmark-modal.html src/bookmark-app.html && eslint . --ext .js,.html",
     "test": "polymer test",
     "start:build": "polymer serve -H 0.0.0.0 -p 8081"
   },
