@@ -55,7 +55,7 @@
         <!-- Drawer content -->
         <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
           <app-toolbar>Bookmark</app-toolbar>
-          <iron-selector selected="{{page}}" attr-for-selected="name" class="drawer-list" role="navigation">
+          <iron-selector selected="{{page}}" attr-for-selected="name" role="navigation">
             <paper-item name="table">Table</paper-item>
             <paper-item name="list">List</paper-item>
           </iron-selector>
@@ -100,13 +100,14 @@
           page: {
             type: String,
             reflectToAttribute: true,
-            observer: '_pageChanged'
-
+            observer: '_pageChanged',
+            value: 'table'
           }
         }
       }
 
       _pageChanged (page) {
+        this.title = page === 'table' ? 'Table' : 'List'
         // Load page import on demand. Show 404 page if fails
         /*var resolvedPageUrl = this.resolveUrl(`bookmark-${page}.html`)
         Polymer.importHref(
