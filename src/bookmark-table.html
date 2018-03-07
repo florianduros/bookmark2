@@ -1,0 +1,53 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
+<dom-module id="bookmark-table">
+  <template>
+    <style>
+    </style>
+    <vaadin-grid id="grid" page-size="20" items=[[bookmarks]]>
+      <vaadin-grid-column>
+        <template class="header"></template>
+        <template>
+          Action
+        </template>
+      </vaadin-grid-column>
+
+      <vaadin-grid-column>
+        <template class="header"></template>
+        <template>
+          Logo
+        </template>
+      </vaadin-grid-column>
+
+      <vaadin-grid-column>
+        <template class="header">Title</template>
+        <template>
+          <div>[[item.title]]</div>
+        </template>
+      </vaadin-grid-column>
+      <vaadin-grid-column>
+        <template class="header">URL</template>
+        <template>
+          <div>[[item.url]]</div>
+        </template>
+      </vaadin-grid-column>
+    </vaadin-grid>
+  </template>
+  <script>
+    class BookmarkTable extends Polymer.Element {
+      static get is () {
+        return 'bookmark-table'
+      }
+
+      static get properties () {
+        return {
+          bookmarks: {
+            type: Array,
+            value: () => ([])
+          }
+        }
+      }
+    }
+    window.customElements.define(BookmarkTable.is, BookmarkTable)
+  </script>
+</dom-module>

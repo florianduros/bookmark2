@@ -131,7 +131,9 @@
       }
 
       addBookmark ({ detail: bookmark }) {
-        this.dispatch('addBookmark', bookmark)
+        // generate a fake id for the test
+        const _bookmark = Object.assign({}, bookmark, { _id: new Date().getTime() })
+        this.dispatch('addBookmark', _bookmark)
       }
     }
     window.customElements.define(BookmarkApp.is, BookmarkApp)

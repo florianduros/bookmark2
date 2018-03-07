@@ -1,0 +1,38 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>bookmark-table demo</title>
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="../bower_components/polymer/lib/elements/dom-bind.html">
+    <link rel="import" href="../bower_components/iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../bower_components/iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../bower_components/paper-button/paper-button.html">
+    <link rel="import" href="../src/bookmark-table.html">
+  </head>
+
+  <body>
+    <demo-snippet>
+      <template>
+        <dom-bind id="demo">
+          <template>
+            <style>
+            </style>
+            <bookmark-table bookmarks=[[bookmarks]]></bookmark-table>
+            <script>
+              'use strict'
+
+              const demo = document.querySelector('#demo')
+              fetch('../data/bookmarks.json')
+                .then(res => res.json())
+                .then(bookmarks => (demo.bookmarks = bookmarks))
+                .catch(err => console.error('unable to load bookmarks', err))
+            </script>
+          </template>
+        </dom-bind>
+      </template>
+    </demo-snippet>
+  </body>
+</html>

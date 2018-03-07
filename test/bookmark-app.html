@@ -54,6 +54,8 @@
           const app = fixture('app')
           app.shadowRoot.querySelector('fake-bookmark-modal')
             .dispatchEvent(new CustomEvent('submit-bookmark', { detail: bookmark }))
+          assert.isNotNull(app.getState().bookmarks[0]._id)
+          bookmark._id = app.getState().bookmarks[0]._id
           assert.deepEqual(app.getState().bookmarks, [bookmark])
         })
       })
