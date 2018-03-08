@@ -26,4 +26,15 @@
   <body>
     <bookmark-app></bookmark-app>
   </body>
+  <script>
+    'use strict'
+
+    window.addEventListener('WebComponentsReady', () => {
+      const app = document.querySelector('bookmark-app')
+      fetch('data/bookmarks.json')
+        .then(res => res.json())
+        .then(bookmarks => bookmarks.forEach(bookmark => app.addBookmark({ detail: bookmark })))
+        .catch(err => console.error('unable to load bookmarks', err))
+    })
+  </script>
 </html>

@@ -13,12 +13,6 @@
         display: flex;
         justify-content: center;
       }
-
-      a {
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-      }
     </style>
     <vaadin-grid page-size="[[offset]]" items=[[currentBookmarks]]>
       <vaadin-grid-column width="60px" flex-grow="0">
@@ -34,7 +28,7 @@
           <img src="../data/vimeo.png" hidden$="[[!item.isVimeo]]"/>
         </template>
       </vaadin-grid-column>
-      <vaadin-grid-column flex-grow="0">
+      <vaadin-grid-column width="200px" flex-grow="0">
         <template class="header">Title</template>
         <template>
           <div style="white-space: normal">[[item.title]]</div>
@@ -43,13 +37,13 @@
       <vaadin-grid-column>
         <template class="header">URL</template>
         <template>
-          <a href="[[item.url]]">[[item.url]]</a>
+          <a href="[[item.url]]" style="text-overflow:ellipsis;overflow:hidden;">[[item.url]]</a>
         </template>
       </vaadin-grid-column>
-      <vaadin-grid-column>
+      <vaadin-grid-column width="150px" flex-grow="0">
           <template class="header">Author</template>
           <template>
-            <div>[[item.author]]</div>
+            <div style="text-overflow:ellipsis;overflow:hidden;">[[item.author]]</div>
           </template>
       </vaadin-grid-column>
       <vaadin-grid-column width="110px" flex-grow="0">
@@ -101,7 +95,7 @@
           bookmarks: {
             type: Array,
             value: () => ([]),
-            observer: '_bookmarksChanged',
+            observer: '_bookmarksChanged'
           },
 
           /**

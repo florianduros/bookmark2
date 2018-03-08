@@ -12,8 +12,10 @@
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="bookmark-dispatcher.html">
 <link rel="import" href="bookmark-modal.html">
+<link rel="import" href="bookmark-table.html">
 
 <dom-module id="bookmark-app">
   <template>
@@ -42,7 +44,8 @@
       iron-pages {
         display: flex;
         height: 100%;
-        background-color: #F5F5F5
+        background-color: #F5F5F5;
+        overflow: hidden;
       }
 
       iron-pages > * {
@@ -53,10 +56,23 @@
         color: white;
       }
 
+      paper-input {
+        --primary-color: #E91E63;
+        --primary-text-color: white;
+        --secondary-text-color: white;
+        --paper-input-container-label-focus: {
+          color: white;
+        }
+      }
+
       paper-fab {
         position: absolute;
         right: 10px;
         bottom: 10px;
+      }
+
+      paper-input {
+        margin-top: 0;
       }
 
     </style>
@@ -78,6 +94,7 @@
             <app-toolbar>
               <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
               <div main-title>[[title]]</div>
+              <paper-input label="search bar" value="{{searchValue}}"></paper-input>
             </app-toolbar>
           </app-header>
 
@@ -87,7 +104,7 @@
             attr-for-selected="name"
             fallback-selection="view404"
             role="main">
-            <span name="table">table</span>
+            <bookmark-table name="table" bookmarks="[[currentBookmarks]]"></bookmark-table>
             <span name="list">list</span>
             <span name="view404">Unable to display the bookmarks</span>
           </iron-pages>
@@ -114,16 +131,50 @@
             reflectToAttribute: true,
             observer: '_pageChanged',
             value: 'table'
+          },
+
+          bookmarks: {
+            type: Object,
+            value: () => ([]),
+            statePath: 'bookmarks',
+            observer: '_computeBookmarks',
+            readOnly: true
+          },
+
+          currentBookmarks: {
+            type: Object,
+            value: () => ([])
+          },
+
+          searchValue: {
+            type: String,
+            observer: '_computeBookmarks',
+            value: () => ''
           }
         }
       }
 
       _pageChanged (page) {
         this.title = page === 'table' ? 'Table' : 'List'
+        // Load page import on demand. Show 404 page if fails
+        if (page !== 'view404') {
+          const resolvedPageUrl = this.resolveUrl(`bookmark-${page}.html`)
+          Polymer.importHref(
+            resolvedPageUrl,
+            null,
+            this._showPage404.bind(this),
+            true)
+        }
       }
 
       _showPage404 () {
         this.page = 'view404'
+      }
+
+      _computeBookmarks () {
+        this.currentBookmarks = this.bookmarks
+          .filter(({ title }) => title.toLowerCase().includes(this.searchValue.toLowerCase()))
+          .map(bookmark => Object.assign({}, bookmark))
       }
 
       openModal () {

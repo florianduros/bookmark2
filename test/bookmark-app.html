@@ -21,8 +21,19 @@
       'use strict'
 
       suite('app', () => {
+        const bookmarks = [
+          { title: 'other', isVimeo: false, url: 'https://flickr.com/250953845', author: 'author3', duration: 'duration3', width: 800, height: 600 },
+          { title: 'title1', isVimeo: true, url: 'https://vimeo.com/250953833', author: 'author1', duration: 'duration1', width: 1920, height: 1080 },
+          { title: 'title2', isVimeo: false, url: 'https://flickr.com/250953833', author: 'author2', duration: 'duration2', width: 800, height: 600 }
+        ]
+
+        let app
+        setup(() => {
+          app = fixture('app')
+          app.dispatch('reset')
+        })
+
         test('default', () => {
-          const app = fixture('app')
           assert.equal(app.page, 'table')
           assert.equal(app.title, 'Table')
           assert.equal(app.$.views.selected, 'table')
@@ -31,7 +42,6 @@
         })
 
         test('select', () => {
-          const app = fixture('app')
           app.shadowRoot.querySelector('iron-selector').selected = 'list'
           assert.equal(app.page, 'list')
           assert.equal(app.title, 'List')
@@ -43,20 +53,52 @@
         })
 
         test('open modal on button click', () => {
-          const app = fixture('app')
           app.shadowRoot.querySelector('paper-fab').click()
           assert.isTrue(app.$.modal.opened)
         })
 
-        test('add bookmark', () => {
-          replace('bookmark-modal').with('fake-bookmark-modal')
-          const bookmark = { title: 'a title', url: 'https://vimeo.com/250953833', author: 'an author', height: 10, isVimeo: true }
-          const app = fixture('app')
-          app.shadowRoot.querySelector('fake-bookmark-modal')
+        const addBookmark = (bookmark, app) => {
+          (app.shadowRoot.querySelector('bookmark-modal'))
             .dispatchEvent(new CustomEvent('submit-bookmark', { detail: bookmark }))
+        }
+
+        test('add bookmark', () => {
+          const [bookmark] = bookmarks
+          addBookmark(bookmark, app)
           assert.isNotNull(app.getState().bookmarks[0]._id)
           bookmark._id = app.getState().bookmarks[0]._id
           assert.deepEqual(app.getState().bookmarks, [bookmark])
+          assert.deepEqual(app.bookmarks, [bookmark])
+          assert.deepEqual(app.currentBookmarks, [bookmark])
+        })
+
+        test('add two bookmark', () => {
+          bookmarks.forEach(bookmark => addBookmark(bookmark, app))
+          app.bookmarks.forEach(({ _id }, index) => {
+            assert.isNotNull(_id)
+            bookmarks[index]._id = _id
+          })
+          assert.deepEqual(app.bookmarks, bookmarks)
+          assert.deepEqual(app.currentBookmarks, bookmarks)
+        })
+
+        test('filter on search bar change', () => {
+          bookmarks.forEach(bookmark => addBookmark(bookmark, app))
+          const input = app.shadowRoot.querySelector('paper-input')
+          input.value = 'TITLE'
+          assert.equal(app.currentBookmarks.length, 2)
+          input.value = '1'
+          assert.equal(app.currentBookmarks.length, 1)
+          assert.equal(app.currentBookmarks[0].title, 'title1')
+          input.value = ''
+          assert.equal(app.currentBookmarks.length, 3)
+        })
+
+        test('filter on bookmark change', () => {
+          const input = app.shadowRoot.querySelector('paper-input')
+          input.value = 'TITLE'
+          bookmarks.forEach(bookmark => addBookmark(bookmark, app))
+          assert.equal(app.currentBookmarks.length, 2)
         })
       })
     </script>
