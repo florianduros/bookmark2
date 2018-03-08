@@ -14,6 +14,13 @@
   </head>
 
   <body>
+    <style>
+      demo-snippet {
+        display: flex;
+        flex-direction: column;
+        font-family: 'Roboto', 'Noto', sans-serif;
+      }
+    </style>
     <demo-snippet>
       <template>
         <dom-bind id="demo">
@@ -25,7 +32,7 @@
               'use strict'
 
               const demo = document.querySelector('#demo')
-              fetch('../data/bookmarks.json')
+              fetch('bookmarks.json')
                 .then(res => res.json())
                 .then(bookmarks => (demo.bookmarks = bookmarks))
                 .catch(err => console.error('unable to load bookmarks', err))

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>bookmark-table test</title>
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../src/bookmark-table.html">
+  </head>
+  <body>
+    <test-fixture id="table">
+      <template>
+        <bookmark-table></bookmark-table>
+      </template>
+    </test-fixture>
+    <script>
+      'use strict'
+
+      suite('pagination', () => {
+        test('default', () => {
+          const table = fixture('table')
+          assert.equal(table.bookmarks.length, 0)
+          assert.equal(table.currentBookmarks.length, 0)
+          assert.equal(table.pageCount, 1)
+          assert.equal(table.currentPage, 1)
+        })
+
+        test('offset 1', () => {
+          const table = fixture('table')
+          table.offset = 1
+          table.bookmarks = [
+            { title: 'title1' }, { title: 'title2' }, { title: 'title3' }
+          ]
+          assert.equal(table.bookmarks.length, 3)
+          assert.deepEqual(table.currentBookmarks, [ { title: 'title1' } ])
+          assert.equal(table.pageCount, 3)
+          assert.equal(table.currentPage, 1)
+
+          table.currentPage = 2
+          assert.deepEqual(table.currentBookmarks, [ { title: 'title2' } ])
+        })
+
+        test('offset 3', () => {
+          const table = fixture('table')
+          table.offset = 3
+          table.bookmarks = [
+            { title: 'title1' }, { title: 'title2' }, { title: 'title3' },
+            { title: 'title4' }, { title: 'title5' }, { title: 'title6' },
+            { title: 'title7' }
+          ]
+          assert.equal(table.bookmarks.length, 7)
+          assert.deepEqual(table.currentBookmarks, [{ title: 'title1' }, { title: 'title2' }, { title: 'title3' }])
+          assert.equal(table.pageCount, 3)
+          assert.equal(table.currentPage, 1)
+
+          table.currentPage = 3
+          assert.deepEqual(table.currentBookmarks, [ { title: 'title7' } ])
+        })
+
+        test('reset current page after bookmarks change', () => {
+          const table = fixture('table')
+          table.offset = 1
+          table.bookmarks = [{ title: 'title1' }, { title: 'title2' }]
+          table.currentPage = 2
+          table.bookmarks = [{ title: 'title3' }, { title: 'title4' }]
+          assert.deepEqual(table.currentBookmarks, [{ title: 'title3' }])
+          assert.equal(table.pageCount, 2)
+          assert.equal(table.currentPage, 1)
+        })
+      })
+
+      const getCells = table => {
+        const grid = table.shadowRoot.querySelector('vaadin-grid')
+        // no event are raised for the grid rendering
+        // wait for the rendering
+        return new Promise(resolve => setTimeout(() => resolve(grid.querySelectorAll('vaadin-grid-cell-content')), 0))
+      }
+
+      // the table has 32 cells by default
+      // each row has 8 cells
+      // 1: action buttons, 2: image, 3: title, 4: url, 5:author  6: duration, 7:width, 8: height
+      suite('table content', () => {
+        test('default', async () => {
+          const table = fixture('table')
+          const cells = await getCells(table)
+          assert.equal(cells.length, 32)
+        })
+
+        test('one row', async () => {
+          const table = fixture('table')
+          table.offset = 1
+          table.bookmarks = [{ title: 'title1' }]
+          const cells = await getCells(table)
+
+          // 32 cells + 8 cells (row)
+          assert.equal(cells.length, 40)
+          // 3 cells (title) -1 (index)
+          assert.equal(cells[2].querySelector('div').innerText, 'title1')
+        })
+
+        const testRow = (bookmark, cells) => {
+          const [cellImgFlickr, cellImgVimeo] = cells[1].querySelectorAll('img')
+
+          if (bookmark.isVimeo) {
+            assert.isNotNull(cellImgFlickr.getAttribute('hidden'))
+            assert.isNull(cellImgVimeo.getAttribute('hidden'))
+          } else {
+            assert.isNull(cellImgFlickr.getAttribute('hidden'))
+            assert.isNotNull(cellImgVimeo.getAttribute('hidden'))
+          }
+          assert.equal(cells[2].querySelector('div').innerText, bookmark.title)
+          const cellURL = cells[3].querySelector('a')
+          assert.equal(cellURL.innerText, bookmark.url)
+          assert.equal(cellURL.getAttribute('href'), bookmark.url)
+        }
+
+        test('two row', async () => {
+          const table = fixture('table')
+          table.offset = 2
+          table.bookmarks = [
+            { title: 'title1', isVimeo: true, url: 'url1', author: 'author1', duration: 'duration1', width: 1920, height: 1080 },
+            { title: 'title2', isVimeo: false, url: 'url2', author: 'author2', duration: 'duration2', width: 800, height: 600 }
+          ]
+          const cells = await getCells(table)
+
+          // 32 cells + 8 cells (row) * 2 (two rows)
+          assert.equal(cells.length, 48)
+          // first row
+          testRow(table.bookmarks[0], [].slice.call(cells, 0, 8))
+          // second row
+          testRow(table.bookmarks[1], [].slice.call(cells, 8, 16))
+        })
+
+        test('two rows with offset 1', async () => {
+          const table = fixture('table')
+          table.offset = 1
+          table.bookmarks = [
+            { title: 'title1', isVimeo: true, url: 'url1', author: 'author1', duration: 'duration1', width: 1920, height: 1080 },
+            { title: 'title2', isVimeo: false, url: 'url2', author: 'author2', duration: 'duration2', width: 800, height: 600 }
+          ]
+          const cells = await getCells(table)
+
+          // 32 cells + 8 cells (one row)
+          assert.equal(cells.length, 40)
+          // first row
+          testRow(table.bookmarks[0], [].slice.call(cells, 0, 8))
+        })
+      })
+    </script>
+  </body>
+</html>

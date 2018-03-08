@@ -1,37 +1,79 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../bower_components/pagination-input/pagination-input.html">
 <dom-module id="bookmark-table">
   <template>
     <style>
+      :host {
+        display: flex;
+        flex-direction: column;
+      }
+
+      div.container {
+        display: flex;
+        justify-content: center;
+      }
+
+      a {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
     </style>
-    <vaadin-grid id="grid" page-size="20" items=[[bookmarks]]>
-      <vaadin-grid-column>
+    <vaadin-grid page-size="[[offset]]" items=[[currentBookmarks]]>
+      <vaadin-grid-column width="60px" flex-grow="0">
         <template class="header"></template>
         <template>
           Action
         </template>
       </vaadin-grid-column>
-
-      <vaadin-grid-column>
+      <vaadin-grid-column width="58px" flex-grow="0">
         <template class="header"></template>
         <template>
-          Logo
+          <img src="../data/flickr.png" hidden$="[[item.isVimeo]]"/>
+          <img src="../data/vimeo.png" hidden$="[[!item.isVimeo]]"/>
         </template>
       </vaadin-grid-column>
-
-      <vaadin-grid-column>
+      <vaadin-grid-column flex-grow="0">
         <template class="header">Title</template>
         <template>
-          <div>[[item.title]]</div>
+          <div style="white-space: normal">[[item.title]]</div>
         </template>
       </vaadin-grid-column>
       <vaadin-grid-column>
         <template class="header">URL</template>
         <template>
-          <div>[[item.url]]</div>
+          <a href="[[item.url]]">[[item.url]]</a>
+        </template>
+      </vaadin-grid-column>
+      <vaadin-grid-column>
+          <template class="header">Author</template>
+          <template>
+            <div>[[item.author]]</div>
+          </template>
+      </vaadin-grid-column>
+      <vaadin-grid-column width="110px" flex-grow="0">
+        <template class="header">Duration</template>
+        <template>
+          <div>[[item.duration]]</div>
+        </template>
+      </vaadin-grid-column>
+      <vaadin-grid-column width="65px" flex-grow="0">
+        <template class="header">Width</template>
+        <template>
+          <div>[[item.width]]</div>
+        </template>
+      </vaadin-grid-column>
+      <vaadin-grid-column width="65px" flex-grow="0">
+        <template class="header">Height</template>
+        <template>
+          <div>[[item.height]]</div>
         </template>
       </vaadin-grid-column>
     </vaadin-grid>
+    <div class="container">
+      <pagination-input current-page="{{currentPage}}" page-count="[[pageCount]]"></pagination-input>
+    </div>
   </template>
   <script>
     class BookmarkTable extends Polymer.Element {
@@ -43,9 +85,41 @@
         return {
           bookmarks: {
             type: Array,
+            value: () => ([]),
+            observer: '_bookmarksChanged'
+          },
+          currentBookmarks: {
+            type: Array,
             value: () => ([])
+          },
+          offset: {
+            type: Number,
+            value: 20
+          },
+          currentPage: {
+            type: Number,
+            value: 1,
+            observer: '_currentPageChanged'
+          },
+          pageCount: {
+            type: Number,
+            value: 1
           }
         }
+      }
+
+      _bookmarksChanged (bookmarks) {
+        this.pageCount = Math.ceil(bookmarks.length / this.offset) || 1
+        if (this.currentPage === 1) {
+          this._currentPageChanged(1)
+        } else {
+          this.currentPage = 1
+        }
+      }
+
+      _currentPageChanged (currentPage) {
+        const start = (currentPage - 1) * this.offset
+        this.currentBookmarks = this.bookmarks.slice(start, start + this.offset)
       }
     }
     window.customElements.define(BookmarkTable.is, BookmarkTable)
