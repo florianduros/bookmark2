@@ -76,6 +76,17 @@
     </div>
   </template>
   <script>
+    /**
+    * Paginate table to display bookmarks
+    *
+    * ```
+    * <bookmark-table bookmarks=[[bookmarks]]></bookmark-table>
+    * ```
+    * @customElement
+    * @polymer
+    * @extends {Polymer.Element}
+    * @demo demo/bookmark-table.html
+    */
     class BookmarkTable extends Polymer.Element {
       static get is () {
         return 'bookmark-table'
@@ -83,24 +94,48 @@
 
       static get properties () {
         return {
+          /**
+          * Bookmark list
+          * @type {Array<{ title: string, url: string, author: string, width: integer, height: integer, duration: string }>}
+          */
           bookmarks: {
             type: Array,
             value: () => ([]),
-            observer: '_bookmarksChanged'
+            observer: '_bookmarksChanged',
           },
+
+          /**
+          * Bookmarks in the current page
+          * @type {Array<{ title: string, url: string, author: string, width: integer, height: integer, duration: string }>}
+          */
           currentBookmarks: {
             type: Array,
             value: () => ([])
           },
+
+          /**
+          * Number of bookmark to display by page
+          * @type {Number}
+          */
           offset: {
             type: Number,
             value: 20
           },
+
+          /**
+          * Current displayed page
+          * @type {Number}
+          */
           currentPage: {
             type: Number,
             value: 1,
             observer: '_currentPageChanged'
           },
+
+          /**
+          * Total number of pages
+          * @type {Number}
+          */
           pageCount: {
             type: Number,
             value: 1
@@ -108,6 +143,10 @@
         }
       }
 
+      /**
+      * Compute the page count and change the current page on bookmark changed
+      * @type {Array<{ title: string, url: string, author: string, width: integer, height: integer, duration: string }>}
+      */
       _bookmarksChanged (bookmarks) {
         this.pageCount = Math.ceil(bookmarks.length / this.offset) || 1
         if (this.currentPage === 1) {
@@ -117,6 +156,10 @@
         }
       }
 
+      /**
+      * Compute the bookmark list to display for the current page
+      * @type {Number}
+      */
       _currentPageChanged (currentPage) {
         const start = (currentPage - 1) * this.offset
         this.currentBookmarks = this.bookmarks.slice(start, start + this.offset)
