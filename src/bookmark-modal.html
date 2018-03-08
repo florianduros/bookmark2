@@ -20,7 +20,8 @@
       <paper-input label="author" value={{bookmark.author}}></paper-input>
       <paper-input label="width" value={{bookmark.width}} type="number" allowed-pattern="\d"></paper-input>
       <paper-input label="height" value={{bookmark.height}} type="number" allowed-pattern="\d"></paper-input>
-      <paper-input label="duration" value={{bookmark.duration}} hidden$=[[!bookmark.isVimeo]] allowed-pattern="\d"></paper-input>
+      <span>Duration</span>
+      <input id="duration" type="time" step="1" value={{bookmark.duration}} hidden$="[[!bookmark.isVimeo]]"/>
       <div class="buttons">
         <paper-button dialog-dismiss>Cancel</paper-button>
         <paper-button disabled$=[[!_isValid(bookmark.title,_validURL)]] on-click="_submit">Accept</paper-button>
@@ -65,7 +66,7 @@
 
           /**
           * Bookmark modal data
-          * @type {{ title: string, url: string, author: string, width: integer, height: integer, duration: integer }}
+          * @type {{ title: string, url: string, author: string, width: integer, height: integer, duration: string }}
           **/
           bookmark: {
             type: Object,
@@ -146,8 +147,8 @@
       * @event submit-bookmark
       */
       _submit () {
-        const _bookmark = Object.assign({}, this.bookmark)
-        const keys = ['width', 'height', 'duration']
+        const _bookmark = Object.assign({}, this.bookmark, this.$.duration.value ? { duration: this.$.duration.value } : {})
+        const keys = ['width', 'height']
         // the paper-input component cast the number to a string value
         // we force the cast to an integer
         keys.forEach(key => {

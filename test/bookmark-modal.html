@@ -149,19 +149,19 @@
       suite('duration input', () => {
         test('default', () => {
           const modal = fixture('modal')
-          assert.isNotNull(modal.shadowRoot.querySelectorAll('paper-input')[5].getAttribute('hidden'))
+          assert.isNotNull(modal.shadowRoot.querySelector('input').getAttribute('hidden'))
         })
 
         test('not vimeo', () => {
           const modal = fixture('modal')
           modal.set('bookmark', { title: 'title', url: 'http://flickr.com/12345' })
-          assert.isNotNull(modal.shadowRoot.querySelectorAll('paper-input')[5].getAttribute('hidden'))
+          assert.isNotNull(modal.shadowRoot.querySelector('input').getAttribute('hidden'))
         })
 
         test('is vimeo', () => {
           const modal = fixture('modal')
           modal.set('bookmark', { title: 'title', url: 'http://vimeo.com/12345' })
-          assert.isNull(modal.shadowRoot.querySelectorAll('paper-input')[5].getAttribute('hidden'))
+          assert.isNull(modal.shadowRoot.querySelector('input').getAttribute('hidden'))
         })
       })
 
@@ -203,9 +203,10 @@
         test('all input', (done) => {
           const modal = fixture('modal')
           modal.opened = true
-          const bookmark = { title: 'a title', url: 'http://vimeo.com/12345', author: 'an author', width: 15, height: 20, duration: 10 }
+          const bookmark = { title: 'a title', url: 'http://vimeo.com/12345', author: 'an author', width: 15, height: 20, duration: '02:15:20' }
           const values = Object.values(bookmark)
           modal.shadowRoot.querySelectorAll('paper-input').forEach((input, index) => { input.value = values[index] })
+          modal.shadowRoot.querySelector('input').value = bookmark.duration
           modal.addEventListener('submit-bookmark', ({ detail }) => {
             assert.deepEqual(detail, Object.assign(bookmark, { isVimeo: true }))
             done()
