@@ -20,7 +20,7 @@
       <paper-input label="author" value={{bookmark.author}}></paper-input>
       <paper-input label="width" value={{bookmark.width}} type="number" allowed-pattern="\d"></paper-input>
       <paper-input label="height" value={{bookmark.height}} type="number" allowed-pattern="\d"></paper-input>
-      <span>Duration</span>
+      <span hidden$="[[!bookmark.isVimeo]]">Duration</span>
       <input id="duration" type="time" step="1" value={{bookmark.duration}} hidden$="[[!bookmark.isVimeo]]"/>
       <div class="buttons">
         <paper-button dialog-dismiss>Cancel</paper-button>
@@ -145,6 +145,7 @@
       * The `width`, `height` and `duration` properties are cast to integer.
       * Close the modal.
       * @event submit-bookmark
+      * @param {{ title: string, url: string, author: string, width: integer, height: integer, duration: string }}
       */
       _submit () {
         const _bookmark = Object.assign({}, this.bookmark, this.$.duration.value ? { duration: this.$.duration.value } : {})

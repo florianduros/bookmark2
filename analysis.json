@@ -336,11 +336,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 148,
+              "line": 149,
               "column": 6
             },
             "end": {
-              "line": 160,
+              "line": 161,
               "column": 7
             }
           },
@@ -362,7 +362,7 @@
           "column": 4
         },
         "end": {
-          "line": 161,
+          "line": 162,
           "column": 5
         }
       },
@@ -435,6 +435,419 @@
       "tagname": "bookmark-modal"
     },
     {
+      "description": "Display bookmarks in a table or a list. Connected to a redux store.\n\n```\n<bookmark-app></bookmark-app>\n```",
+      "summary": "",
+      "path": "src\\bookmark-app.html",
+      "properties": [
+        {
+          "name": "title",
+          "type": "string",
+          "description": "Header title",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 136,
+              "column": 10
+            },
+            "end": {
+              "line": 139,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"Table\""
+        },
+        {
+          "name": "page",
+          "type": "string",
+          "description": "Current page",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 145,
+              "column": 10
+            },
+            "end": {
+              "line": 150,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "observer": "\"_pageChanged\""
+            }
+          },
+          "defaultValue": "\"table\""
+        },
+        {
+          "name": "bookmarks",
+          "type": "Array.<{title: string, url: string, author: string, width: integer, height: integer, duration: string}>",
+          "description": "Bookmak list.\nBind to bookmarks redux state",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 157,
+              "column": 10
+            },
+            "end": {
+              "line": 163,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "observer": "\"_computeBookmarks\"",
+              "readOnly": true
+            }
+          },
+          "defaultValue": "[]"
+        },
+        {
+          "name": "currentBookmarks",
+          "type": "Array.<{title: string, url: string, author: string, width: integer, height: integer, duration: string}>",
+          "description": "Filtered bookmarks (by search value)",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 169,
+              "column": 10
+            },
+            "end": {
+              "line": 172,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "[]"
+        },
+        {
+          "name": "currentBookmark",
+          "type": "Object",
+          "description": "Current edited bookmark",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 178,
+              "column": 10
+            },
+            "end": {
+              "line": 181,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "{}"
+        },
+        {
+          "name": "searchValue",
+          "type": "string",
+          "description": "Current search valuve",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 187,
+              "column": 10
+            },
+            "end": {
+              "line": 191,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "observer": "\"_computeBookmarks\""
+            }
+          },
+          "defaultValue": "\"\""
+        }
+      ],
+      "methods": [
+        {
+          "name": "_pageChanged",
+          "description": "Change the current page\nTriggered when the `page` property change",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 200,
+              "column": 6
+            },
+            "end": {
+              "line": 211,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "page"
+            }
+          ]
+        },
+        {
+          "name": "_showPage404",
+          "description": "Display the 404 page",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 216,
+              "column": 6
+            },
+            "end": {
+              "line": 218,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "_computeBookmarks",
+          "description": "Compute the current bookmarks. The bookmarks are filtered by the search value on the titles",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 223,
+              "column": 6
+            },
+            "end": {
+              "line": 227,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "showAddModal",
+          "description": "Display the modal for bookmark creation",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 232,
+              "column": 6
+            },
+            "end": {
+              "line": 234,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "showEditModal",
+          "description": "Display the modal for bookmark edition",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 240,
+              "column": 6
+            },
+            "end": {
+              "line": 245,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "{detail: id}"
+            }
+          ]
+        },
+        {
+          "name": "addBookmark",
+          "description": "Dispatch to the redux store the new bookmark",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 251,
+              "column": 6
+            },
+            "end": {
+              "line": 254,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "{detail: bookmark}"
+            }
+          ]
+        },
+        {
+          "name": "removeBookmark",
+          "description": "Dispatch to the redux store the remove bookmark action",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 260,
+              "column": 6
+            },
+            "end": {
+              "line": 262,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "{detail: id}"
+            }
+          ]
+        },
+        {
+          "name": "setBookmark",
+          "description": "Dispatch to the redux store the set bookmark action",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 268,
+              "column": 6
+            },
+            "end": {
+              "line": 270,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "{detail: bookmark}"
+            }
+          ]
+        }
+      ],
+      "staticMethods": [],
+      "demos": [],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 125,
+          "column": 4
+        },
+        "end": {
+          "line": 271,
+          "column": 5
+        }
+      },
+      "privacy": "public",
+      "superclass": "HTMLElement",
+      "name": "BookmarkApp",
+      "attributes": [
+        {
+          "name": "title",
+          "description": "Header title",
+          "sourceRange": {
+            "start": {
+              "line": 136,
+              "column": 10
+            },
+            "end": {
+              "line": 139,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "page",
+          "description": "Current page",
+          "sourceRange": {
+            "start": {
+              "line": 145,
+              "column": 10
+            },
+            "end": {
+              "line": 150,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "bookmarks",
+          "description": "Bookmak list.\nBind to bookmarks redux state",
+          "sourceRange": {
+            "start": {
+              "line": 157,
+              "column": 10
+            },
+            "end": {
+              "line": 163,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "Array.<{title: string, url: string, author: string, width: integer, height: integer, duration: string}>"
+        },
+        {
+          "name": "current-bookmarks",
+          "description": "Filtered bookmarks (by search value)",
+          "sourceRange": {
+            "start": {
+              "line": 169,
+              "column": 10
+            },
+            "end": {
+              "line": 172,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "Array.<{title: string, url: string, author: string, width: integer, height: integer, duration: string}>"
+        },
+        {
+          "name": "current-bookmark",
+          "description": "Current edited bookmark",
+          "sourceRange": {
+            "start": {
+              "line": 178,
+              "column": 10
+            },
+            "end": {
+              "line": 181,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "Object"
+        },
+        {
+          "name": "search-value",
+          "description": "Current search valuve",
+          "sourceRange": {
+            "start": {
+              "line": 187,
+              "column": 10
+            },
+            "end": {
+              "line": 191,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        }
+      ],
+      "events": [],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [],
+      "tagname": "bookmark-app"
+    },
+    {
       "description": "Paginate table to display bookmarks\n\n```\n<bookmark-table bookmarks=[[bookmarks]]></bookmark-table>\n```",
       "summary": "",
       "path": "src\\bookmark-table.html",
@@ -446,11 +859,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 100,
+              "line": 98,
               "column": 10
             },
             "end": {
-              "line": 104,
+              "line": 102,
               "column": 11
             }
           },
@@ -468,11 +881,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 110,
+              "line": 108,
               "column": 10
             },
             "end": {
-              "line": 113,
+              "line": 111,
               "column": 11
             }
           },
@@ -488,11 +901,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 119,
+              "line": 117,
               "column": 10
             },
             "end": {
-              "line": 122,
+              "line": 120,
               "column": 11
             }
           },
@@ -508,11 +921,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 128,
+              "line": 126,
               "column": 10
             },
             "end": {
-              "line": 132,
+              "line": 130,
               "column": 11
             }
           },
@@ -530,11 +943,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 138,
+              "line": 136,
               "column": 10
             },
             "end": {
-              "line": 141,
+              "line": 139,
               "column": 11
             }
           },
@@ -551,11 +964,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 149,
+              "line": 147,
               "column": 6
             },
             "end": {
-              "line": 156,
+              "line": 154,
               "column": 7
             }
           },
@@ -572,11 +985,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 162,
+              "line": 160,
               "column": 6
             },
             "end": {
-              "line": 165,
+              "line": 163,
               "column": 7
             }
           },
@@ -584,6 +997,48 @@
           "params": [
             {
               "name": "currentPage"
+            }
+          ]
+        },
+        {
+          "name": "_dispatchRemove",
+          "description": "Fire `remove-bookmark` event",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 171,
+              "column": 6
+            },
+            "end": {
+              "line": 173,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "{model}"
+            }
+          ]
+        },
+        {
+          "name": "_dispatchEdit",
+          "description": "Fire `edit-bookmark` event",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 181,
+              "column": 6
+            },
+            "end": {
+              "line": 183,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "{model}"
             }
           ]
         }
@@ -598,11 +1053,11 @@
       "metadata": {},
       "sourceRange": {
         "start": {
-          "line": 89,
+          "line": 87,
           "column": 4
         },
         "end": {
-          "line": 166,
+          "line": 184,
           "column": 5
         }
       },
@@ -615,11 +1070,11 @@
           "description": "Bookmark list",
           "sourceRange": {
             "start": {
-              "line": 100,
+              "line": 98,
               "column": 10
             },
             "end": {
-              "line": 104,
+              "line": 102,
               "column": 11
             }
           },
@@ -631,11 +1086,11 @@
           "description": "Bookmarks in the current page",
           "sourceRange": {
             "start": {
-              "line": 110,
+              "line": 108,
               "column": 10
             },
             "end": {
-              "line": 113,
+              "line": 111,
               "column": 11
             }
           },
@@ -647,11 +1102,11 @@
           "description": "Number of bookmark to display by page",
           "sourceRange": {
             "start": {
-              "line": 119,
+              "line": 117,
               "column": 10
             },
             "end": {
-              "line": 122,
+              "line": 120,
               "column": 11
             }
           },
@@ -663,11 +1118,11 @@
           "description": "Current displayed page",
           "sourceRange": {
             "start": {
-              "line": 128,
+              "line": 126,
               "column": 10
             },
             "end": {
-              "line": 132,
+              "line": 130,
               "column": 11
             }
           },
@@ -679,11 +1134,11 @@
           "description": "Total number of pages",
           "sourceRange": {
             "start": {
-              "line": 138,
+              "line": 136,
               "column": 10
             },
             "end": {
-              "line": 141,
+              "line": 139,
               "column": 11
             }
           },
@@ -691,280 +1146,26 @@
           "type": "number"
         }
       ],
-      "events": [],
+      "events": [
+        {
+          "type": "CustomEvent",
+          "name": "edit-bookmark",
+          "description": "edit-bookmark",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "remove-bookmark",
+          "description": "remove-bookmark",
+          "metadata": {}
+        }
+      ],
       "styling": {
         "cssVariables": [],
         "selectors": []
       },
       "slots": [],
       "tagname": "bookmark-table"
-    },
-    {
-      "description": "",
-      "summary": "",
-      "path": "src\\bookmark-app.html",
-      "properties": [
-        {
-          "name": "title",
-          "type": "string",
-          "description": "",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 107,
-              "column": 10
-            },
-            "end": {
-              "line": 110,
-              "column": 11
-            }
-          },
-          "metadata": {
-            "polymer": {}
-          },
-          "defaultValue": "\"Table\""
-        },
-        {
-          "name": "page",
-          "type": "string",
-          "description": "",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 112,
-              "column": 10
-            },
-            "end": {
-              "line": 117,
-              "column": 11
-            }
-          },
-          "metadata": {
-            "polymer": {
-              "observer": "\"_pageChanged\""
-            }
-          },
-          "defaultValue": "\"table\""
-        }
-      ],
-      "methods": [
-        {
-          "name": "connectedCallback",
-          "description": "",
-          "privacy": "public",
-          "sourceRange": {
-            "file": "..\\bower_components\\polymer-redux\\dist\\polymer-redux.html",
-            "start": {
-              "line": 167,
-              "column": 3
-            },
-            "end": {
-              "line": 171,
-              "column": 4
-            }
-          },
-          "metadata": {},
-          "params": [],
-          "inheritedFrom": "ReduxMixin"
-        },
-        {
-          "name": "disconnectedCallback",
-          "description": "",
-          "privacy": "public",
-          "sourceRange": {
-            "file": "..\\bower_components\\polymer-redux\\dist\\polymer-redux.html",
-            "start": {
-              "line": 173,
-              "column": 3
-            },
-            "end": {
-              "line": 176,
-              "column": 4
-            }
-          },
-          "metadata": {},
-          "params": [],
-          "inheritedFrom": "ReduxMixin"
-        },
-        {
-          "name": "dispatch",
-          "description": "Dispatches an action to the Redux store.",
-          "privacy": "public",
-          "sourceRange": {
-            "file": "..\\bower_components\\polymer-redux\\dist\\polymer-redux.html",
-            "start": {
-              "line": 195,
-              "column": 3
-            },
-            "end": {
-              "line": 237,
-              "column": 4
-            }
-          },
-          "metadata": {},
-          "params": [],
-          "return": {
-            "type": "Object",
-            "desc": "The action."
-          },
-          "inheritedFrom": "ReduxMixin"
-        },
-        {
-          "name": "getState",
-          "description": "Gets the current state in the Redux store.",
-          "privacy": "public",
-          "sourceRange": {
-            "file": "..\\bower_components\\polymer-redux\\dist\\polymer-redux.html",
-            "start": {
-              "line": 244,
-              "column": 3
-            },
-            "end": {
-              "line": 246,
-              "column": 4
-            }
-          },
-          "metadata": {},
-          "params": [],
-          "return": {
-            "type": "*"
-          },
-          "inheritedFrom": "ReduxMixin"
-        },
-        {
-          "name": "_pageChanged",
-          "description": "",
-          "privacy": "protected",
-          "sourceRange": {
-            "start": {
-              "line": 121,
-              "column": 6
-            },
-            "end": {
-              "line": 123,
-              "column": 7
-            }
-          },
-          "metadata": {},
-          "params": [
-            {
-              "name": "page"
-            }
-          ]
-        },
-        {
-          "name": "_showPage404",
-          "description": "",
-          "privacy": "protected",
-          "sourceRange": {
-            "start": {
-              "line": 125,
-              "column": 6
-            },
-            "end": {
-              "line": 127,
-              "column": 7
-            }
-          },
-          "metadata": {},
-          "params": []
-        },
-        {
-          "name": "openModal",
-          "description": "",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 129,
-              "column": 6
-            },
-            "end": {
-              "line": 131,
-              "column": 7
-            }
-          },
-          "metadata": {},
-          "params": []
-        },
-        {
-          "name": "addBookmark",
-          "description": "",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 133,
-              "column": 6
-            },
-            "end": {
-              "line": 137,
-              "column": 7
-            }
-          },
-          "metadata": {},
-          "params": [
-            {
-              "name": "{detail: bookmark}"
-            }
-          ]
-        }
-      ],
-      "staticMethods": [],
-      "demos": [],
-      "metadata": {},
-      "sourceRange": {
-        "start": {
-          "line": 100,
-          "column": 4
-        },
-        "end": {
-          "line": 138,
-          "column": 5
-        }
-      },
-      "privacy": "public",
-      "superclass": "BookmarkDispatcher",
-      "name": "BookmarkApp",
-      "attributes": [
-        {
-          "name": "title",
-          "description": "",
-          "sourceRange": {
-            "start": {
-              "line": 107,
-              "column": 10
-            },
-            "end": {
-              "line": 110,
-              "column": 11
-            }
-          },
-          "metadata": {},
-          "type": "string"
-        },
-        {
-          "name": "page",
-          "description": "",
-          "sourceRange": {
-            "start": {
-              "line": 112,
-              "column": 10
-            },
-            "end": {
-              "line": 117,
-              "column": 11
-            }
-          },
-          "metadata": {},
-          "type": "string"
-        }
-      ],
-      "events": [],
-      "styling": {
-        "cssVariables": [],
-        "selectors": []
-      },
-      "slots": [],
-      "tagname": "bookmark-app"
     }
   ]
 }

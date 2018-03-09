@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../bower_components/pagination-input/pagination-input.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <dom-module id="bookmark-table">
   <template>
     <style>
@@ -15,10 +16,13 @@
       }
     </style>
     <vaadin-grid page-size="[[offset]]" items=[[currentBookmarks]]>
-      <vaadin-grid-column width="60px" flex-grow="0">
+      <vaadin-grid-column width="100px" flex-grow="0">
         <template class="header"></template>
         <template>
-          Action
+          <div>
+            <paper-icon-button icon="create" on-click="_dispatchEdit"></paper-icon-button>
+            <paper-icon-button icon="delete" on-click="_dispatchRemove"></paper-icon-button>
+          </div>
         </template>
       </vaadin-grid-column>
       <vaadin-grid-column width="58px" flex-grow="0">
@@ -152,11 +156,31 @@
 
       /**
       * Compute the bookmark list to display for the current page
-      * @type {Number}
+      * @type {Number} current page
       */
       _currentPageChanged (currentPage) {
         const start = (currentPage - 1) * this.offset
         this.currentBookmarks = this.bookmarks.slice(start, start + this.offset)
+      }
+
+      /**
+      * Fire `remove-bookmark` event
+      *
+      * @event remove-bookmark
+      * @param {String} bookmark id
+      */
+      _dispatchRemove ({ model }) {
+        this.dispatchEvent(new CustomEvent('remove-bookmark', { detail: model.item.id }))
+      }
+
+      /**
+      * Fire `edit-bookmark` event
+      *
+      * @event edit-bookmark
+      * @param {String} bookmark id
+      */
+      _dispatchEdit ({ model }) {
+        this.dispatchEvent(new CustomEvent('set-bookmark', { detail: model.item.id }))
       }
     }
     window.customElements.define(BookmarkTable.is, BookmarkTable)

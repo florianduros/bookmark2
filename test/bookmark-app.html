@@ -38,7 +38,8 @@
           assert.equal(app.title, 'Table')
           assert.equal(app.$.views.selected, 'table')
           assert.equal(app.shadowRoot.querySelector('iron-selector').selected, 'table')
-          assert.isFalse(app.$.modal.opened)
+          assert.isFalse(app.$.addModal.opened)
+          assert.isFalse(app.$.setModal.opened)
         })
 
         test('select', () => {
@@ -52,9 +53,9 @@
           assert.equal(app.$.views.selected, 'table')
         })
 
-        test('open modal on button click', () => {
+        test('open add modal on button click', () => {
           app.shadowRoot.querySelector('paper-fab').click()
-          assert.isTrue(app.$.modal.opened)
+          assert.isTrue(app.$.addModal.opened)
         })
 
         const addBookmark = (bookmark, app) => {
@@ -65,8 +66,8 @@
         test('add bookmark', () => {
           const [bookmark] = bookmarks
           addBookmark(bookmark, app)
-          assert.isNotNull(app.getState().bookmarks[0]._id)
-          bookmark._id = app.getState().bookmarks[0]._id
+          assert.isNotNull(app.getState().bookmarks[0].id)
+          bookmark.id = app.getState().bookmarks[0].id
           assert.deepEqual(app.getState().bookmarks, [bookmark])
           assert.deepEqual(app.bookmarks, [bookmark])
           assert.deepEqual(app.currentBookmarks, [bookmark])
@@ -74,9 +75,9 @@
 
         test('add two bookmark', () => {
           bookmarks.forEach(bookmark => addBookmark(bookmark, app))
-          app.bookmarks.forEach(({ _id }, index) => {
-            assert.isNotNull(_id)
-            bookmarks[index]._id = _id
+          app.bookmarks.forEach(({ id }, index) => {
+            assert.isNotNull(id)
+            bookmarks[index].id = id
           })
           assert.deepEqual(app.bookmarks, bookmarks)
           assert.deepEqual(app.currentBookmarks, bookmarks)
@@ -99,6 +100,57 @@
           input.value = 'TITLE'
           bookmarks.forEach(bookmark => addBookmark(bookmark, app))
           assert.equal(app.currentBookmarks.length, 2)
+        })
+
+        const removeBookmark = (id, app) => {
+          (app.shadowRoot.querySelector('bookmark-table'))
+            .dispatchEvent(new CustomEvent('remove-bookmark', { detail: id }))
+        }
+
+        test('remove bookmark', () => {
+          const [bookmark] = bookmarks
+          addBookmark(bookmark, app)
+          removeBookmark(app.getState().bookmarks[0].id, app)
+          assert.equal(app.bookmarks.length, 0)
+          assert.equal(app.currentBookmarks.length, 0)
+        })
+
+        test('remove two bookmarks', () => {
+          bookmarks.forEach(bookmark => addBookmark(bookmark, app))
+          removeBookmark(app.getState().bookmarks[0].id, app)
+          assert.equal(app.bookmarks.length, 2)
+          assert.equal(app.currentBookmarks.length, 2)
+          assert.equal(app.currentBookmarks[0].title, 'title1')
+          removeBookmark(app.getState().bookmarks[1].id, app)
+          assert.equal(app.bookmarks.length, 1)
+          assert.equal(app.currentBookmarks.length, 1)
+          assert.equal(app.currentBookmarks[0].title, 'title1')
+        })
+
+        const setBookmark = (id, app) => {
+          (app.shadowRoot.querySelector('bookmark-table'))
+            .dispatchEvent(new CustomEvent('set-bookmark', { detail: id }))
+        }
+
+        test('set bookmark', () => {
+          const [bookmark] = bookmarks
+          addBookmark(bookmark, app)
+          setBookmark(app.getState().bookmarks[0].id, app)
+          assert.deepEqual(app.currentBookmark, app.getState().bookmarks[0])
+          assert.isTrue(app.$.setModal.opened)
+          app.$.setModal.bookmark.url = 'new url'
+          app.$.setModal._submit()
+          assert.equal(app.getState().bookmarks[0].url, 'new url')
+          assert.isFalse(app.$.setModal.opened)
+        })
+
+        test('close on set bookmark modal doesnt alterate the current bookmark', () => {
+          const [bookmark] = bookmarks
+          addBookmark(bookmark, app)
+          setBookmark(app.getState().bookmarks[0].id, app)
+          app.$.setModal.bookmark.url = 'new url'
+          app.$.setModal.opened = false
+          assert.deepEqual(app.currentBookmark, app.getState().bookmarks[0])
         })
       })
     </script>

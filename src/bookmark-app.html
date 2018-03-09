@@ -9,13 +9,11 @@
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="bookmark-dispatcher.html">
 <link rel="import" href="bookmark-modal.html">
-<link rel="import" href="bookmark-table.html">
 
 <dom-module id="bookmark-app">
   <template>
@@ -104,16 +102,27 @@
             attr-for-selected="name"
             fallback-selection="view404"
             role="main">
-            <bookmark-table name="table" bookmarks="[[currentBookmarks]]"></bookmark-table>
+            <bookmark-table name="table" bookmarks="[[currentBookmarks]]" on-remove-bookmark="removeBookmark" on-set-bookmark="showEditModal"></bookmark-table>
             <span name="list">list</span>
             <span name="view404">Unable to display the bookmarks</span>
           </iron-pages>
-          <paper-fab icon="add" on-click="openModal"></paper-fab>
+          <paper-fab icon="add" on-click="showAddModal"></paper-fab>
         </app-header-layout>
       </app-drawer-layout>
-      <bookmark-modal id="modal" on-submit-bookmark="addBookmark"></bookmark-modal>
+      <bookmark-modal id="addModal" title="Add a bookmark" on-submit-bookmark="addBookmark"></bookmark-modal>
+      <bookmark-modal id="setModal" title="Edit a bookmark" on-submit-bookmark="setBookmark" bookmark="[[currentBookmark]]"></bookmark-modal>
   </template>
   <script>
+    /**
+     * Display bookmarks in a table or a list. Connected to a redux store.
+     *
+     * ```
+     * <bookmark-app></bookmark-app>
+     * ```
+     * @customElement
+     * @polymer
+     * @extends {BookmarkDispatcher}
+     */
     class BookmarkApp extends BookmarkDispatcher {
       static get is () {
         return 'bookmark-app'
@@ -121,11 +130,19 @@
 
       static get properties () {
         return {
+          /**
+          * Header title
+          * @type {string}
+          */
           title: {
             type: String,
             value: 'Table'
           },
 
+          /**
+          * Current page
+          * @type {string}
+          */
           page: {
             type: String,
             reflectToAttribute: true,
@@ -133,19 +150,41 @@
             value: 'table'
           },
 
+          /**
+          * Bookmak list.
+          * Bind to bookmarks redux state
+          * @type {Array<{ title: string, url: string, author: string, width: integer, height: integer, duration: string }>}
+          */
           bookmarks: {
-            type: Object,
+            type: Array,
             value: () => ([]),
             statePath: 'bookmarks',
             observer: '_computeBookmarks',
             readOnly: true
           },
 
+          /**
+          * Filtered bookmarks (by search value)
+          * @type {Array<{ title: string, url: string, author: string, width: integer, height: integer, duration: string }>}
+          */
           currentBookmarks: {
-            type: Object,
+            type: Array,
             value: () => ([])
           },
 
+          /**
+          * Current edited bookmark
+          * @type {title: string, url: string, author: string, width: integer, height: integer, duration: string}
+          */
+          currentBookmark: {
+            type: Object,
+            value: () => ({})
+          },
+
+          /**
+          * Current search valuve
+          * @type {string}
+          */
           searchValue: {
             type: String,
             observer: '_computeBookmarks',
@@ -154,6 +193,11 @@
         }
       }
 
+      /**
+      * Change the current page
+      * Triggered when the `page` property change
+      * @type {string} current page
+      */
       _pageChanged (page) {
         this.title = page === 'table' ? 'Table' : 'List'
         // Load page import on demand. Show 404 page if fails
@@ -167,24 +211,63 @@
         }
       }
 
+      /**
+      * Display the 404 page
+      */
       _showPage404 () {
         this.page = 'view404'
       }
 
+      /**
+      * Compute the current bookmarks. The bookmarks are filtered by the search value on the titles
+      */
       _computeBookmarks () {
         this.currentBookmarks = this.bookmarks
           .filter(({ title }) => title.toLowerCase().includes(this.searchValue.toLowerCase()))
           .map(bookmark => Object.assign({}, bookmark))
       }
 
-      openModal () {
-        this.$.modal.opened = true
+      /**
+      * Display the modal for bookmark creation
+      */
+      showAddModal () {
+        this.$.addModal.opened = true
       }
 
+      /**
+      * Display the modal for bookmark edition
+      * @param {detail: { id: string }}
+      */
+      showEditModal ({ detail: id }) {
+        // force to trigger the binding
+        this.set('currentBookmark', {})
+        this.set('currentBookmark', this.bookmarks.find(({ id: _id }) => _id === id) || {})
+        this.$.setModal.opened = true
+      }
+
+      /**
+      * Dispatch to the redux store the new bookmark
+      * @param {detail: bookmark}
+      */
       addBookmark ({ detail: bookmark }) {
-        // generate a fake id for the test
-        const _bookmark = Object.assign({}, bookmark, { _id: new Date().getTime() })
-        this.dispatch('addBookmark', _bookmark)
+        // generate a fake id
+        this.dispatch('addBookmark', Object.assign({}, bookmark, { id: window.crypto.getRandomValues(new Uint32Array(1))[0] }))
+      }
+
+      /**
+      * Dispatch to the redux store the remove bookmark action
+      * @param {detail: string} bookmark id
+      */
+      removeBookmark ({ detail: id }) {
+        this.dispatch('removeBookmark', id)
+      }
+
+      /**
+      * Dispatch to the redux store the set bookmark action
+      * @param {detail: bookmark}
+      */
+      setBookmark ({ detail: bookmark }) {
+        this.dispatch('setBookmark', Object.assign({}, bookmark))
       }
     }
     window.customElements.define(BookmarkApp.is, BookmarkApp)

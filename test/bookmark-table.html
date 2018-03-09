@@ -150,6 +150,54 @@
           testRow(table.bookmarks[0], [].slice.call(cells, 0, 8))
         })
       })
+
+      suite('action', () => {
+        const verifyEvent = (event, assertFunction, button, table) => {
+          return Promise.all([
+            new Promise(resolve => {
+              table.addEventListener(event, ({ detail }) => {
+                assertFunction(detail)
+                resolve()
+              }, { once: true })
+            }),
+            new Promise(resolve => { button.click(); resolve() })
+          ])
+        }
+
+        test('remove', async () => {
+          const table = fixture('table')
+          table.bookmarks = [
+            { title: 'title1', isVimeo: true, id: 'id1' },
+            { title: 'title2', isVimeo: false, id: 'id2' }
+          ]
+          const cells = await getCells(table)
+
+          // Get the delete button of the first row
+          const firstDeleteButton = cells[0].querySelectorAll('paper-icon-button')[1]
+          await verifyEvent('remove-bookmark', id => assert.equal(id, 'id1'), firstDeleteButton, table)
+
+          // Get the delete button of the second row
+          const secondDeleteButton = cells[8].querySelectorAll('paper-icon-button')[1]
+          await verifyEvent('remove-bookmark', id => assert.equal(id, 'id2'), secondDeleteButton, table)
+        })
+
+        test('set', async () => {
+          const table = fixture('table')
+          table.bookmarks = [
+            { title: 'title1', isVimeo: true, id: 'id1' },
+            { title: 'title2', isVimeo: false, id: 'id2' }
+          ]
+          const cells = await getCells(table)
+
+          // Get the delete button of the first row
+          const firstEditButton = cells[0].querySelectorAll('paper-icon-button')[0]
+          await verifyEvent('set-bookmark', bookmark => assert.equal(bookmark, 'id1'), firstEditButton, table)
+
+          // Get the delete button of the second row
+          const secondEditButton = cells[8].querySelectorAll('paper-icon-button')[0]
+          await verifyEvent('set-bookmark', bookmark => assert.equal(bookmark, 'id2'), secondEditButton, table)
+        })
+      })
     </script>
   </body>
 </html>
