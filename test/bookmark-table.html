@@ -80,14 +80,14 @@
         return new Promise(resolve => setTimeout(() => resolve(grid.querySelectorAll('vaadin-grid-cell-content')), 0))
       }
 
-      // the table has 32 cells by default
-      // each row has 8 cells
-      // 1: action buttons, 2: image, 3: title, 4: url, 5:author  6: duration, 7:width, 8: height
+      // the table has 36 cells by default
+      // each row has 9 cells
+      // 1: action buttons, 2: image, 3: title, 4: url, 5:author  6: duration, 7:width, 8: height, 9: tags
       suite('table content', () => {
         test('default', async () => {
           const table = fixture('table')
           const cells = await getCells(table)
-          assert.equal(cells.length, 32)
+          assert.equal(cells.length, 36)
         })
 
         test('one row', async () => {
@@ -96,8 +96,8 @@
           table.bookmarks = [{ title: 'title1' }]
           const cells = await getCells(table)
 
-          // 32 cells + 8 cells (row)
-          assert.equal(cells.length, 40)
+          // 36 cells + 9 cells (row)
+          assert.equal(cells.length, 45)
           // 3 cells (title) -1 (index)
           assert.equal(cells[2].querySelector('div').innerText, 'title1')
         })
@@ -116,38 +116,39 @@
           const cellURL = cells[3].querySelector('a')
           assert.equal(cellURL.innerText, bookmark.url)
           assert.equal(cellURL.getAttribute('href'), bookmark.url)
+          assert.equal(cells[8].querySelectorAll('paper-chip').length, bookmark.tags.length)
         }
 
         test('two row', async () => {
           const table = fixture('table')
           table.offset = 2
           table.bookmarks = [
-            { title: 'title1', isVimeo: true, url: 'url1', author: 'author1', duration: 'duration1', width: 1920, height: 1080 },
-            { title: 'title2', isVimeo: false, url: 'url2', author: 'author2', duration: 'duration2', width: 800, height: 600 }
+            { title: 'title1', isVimeo: true, url: 'url1', author: 'author1', duration: 'duration1', width: 1920, height: 1080, tags: ['tag1'] },
+            { title: 'title2', isVimeo: false, url: 'url2', author: 'author2', duration: 'duration2', width: 800, height: 600, tags: ['tag1', 'tag2'] }
           ]
           const cells = await getCells(table)
 
-          // 32 cells + 8 cells (row) * 2 (two rows)
-          assert.equal(cells.length, 48)
+          // 36 cells + 9 cells (row) * 2 (two rows)
+          assert.equal(cells.length, 54)
           // first row
-          testRow(table.bookmarks[0], [].slice.call(cells, 0, 8))
+          testRow(table.bookmarks[0], [].slice.call(cells, 0, 9))
           // second row
-          testRow(table.bookmarks[1], [].slice.call(cells, 8, 16))
+          testRow(table.bookmarks[1], [].slice.call(cells, 9, 18))
         })
 
         test('two rows with offset 1', async () => {
           const table = fixture('table')
           table.offset = 1
           table.bookmarks = [
-            { title: 'title1', isVimeo: true, url: 'url1', author: 'author1', duration: 'duration1', width: 1920, height: 1080 },
-            { title: 'title2', isVimeo: false, url: 'url2', author: 'author2', duration: 'duration2', width: 800, height: 600 }
+            { title: 'title1', isVimeo: true, url: 'url1', author: 'author1', duration: 'duration1', width: 1920, height: 1080, tags: [] },
+            { title: 'title2', isVimeo: false, url: 'url2', author: 'author2', duration: 'duration2', width: 800, height: 600, tags: ['tag1', 'tag2'] }
           ]
           const cells = await getCells(table)
 
-          // 32 cells + 8 cells (one row)
-          assert.equal(cells.length, 40)
+          // 36 cells + 9 cells (one row)
+          assert.equal(cells.length, 45)
           // first row
-          testRow(table.bookmarks[0], [].slice.call(cells, 0, 8))
+          testRow(table.bookmarks[0], [].slice.call(cells, 0, 9))
         })
       })
 
@@ -177,7 +178,7 @@
           await verifyEvent('remove-bookmark', id => assert.equal(id, 'id1'), firstDeleteButton, table)
 
           // Get the delete button of the second row
-          const secondDeleteButton = cells[8].querySelectorAll('paper-icon-button')[1]
+          const secondDeleteButton = cells[9].querySelectorAll('paper-icon-button')[1]
           await verifyEvent('remove-bookmark', id => assert.equal(id, 'id2'), secondDeleteButton, table)
         })
 
@@ -194,7 +195,7 @@
           await verifyEvent('set-bookmark', bookmark => assert.equal(bookmark, 'id1'), firstEditButton, table)
 
           // Get the delete button of the second row
-          const secondEditButton = cells[8].querySelectorAll('paper-icon-button')[0]
+          const secondEditButton = cells[9].querySelectorAll('paper-icon-button')[0]
           await verifyEvent('set-bookmark', bookmark => assert.equal(bookmark, 'id2'), secondEditButton, table)
         })
       })

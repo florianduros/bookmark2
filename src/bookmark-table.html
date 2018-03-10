@@ -2,6 +2,7 @@
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../bower_components/pagination-input/pagination-input.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-chip/paper-chip.html">
 <dom-module id="bookmark-table">
   <template>
     <style>
@@ -13,6 +14,15 @@
       div.container {
         display: flex;
         justify-content: center;
+      }
+
+      div.tags {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      paper-chip {
+        margin: 1px;
       }
     </style>
     <vaadin-grid page-size="[[offset]]" items=[[currentBookmarks]]>
@@ -66,6 +76,16 @@
         <template class="header">Height</template>
         <template>
           <div>[[item.height]]</div>
+        </template>
+      </vaadin-grid-column>
+      <vaadin-grid-column>
+        <template class="header">Tags</template>
+        <template>
+          <div class="tags">
+            <template is="dom-repeat" items="[[item.tags]]" as="tag">
+              <paper-chip>[[tag]]</paper-chip>
+            </template>
+          </div>
         </template>
       </vaadin-grid-column>
     </vaadin-grid>

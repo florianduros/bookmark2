@@ -2,6 +2,7 @@
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-chip/paper-chip.html">
 <dom-module id="bookmark-modal">
   <template>
     <style>
@@ -11,6 +12,22 @@
 
       paper-input {
         margin-top: 0;
+        flex: 1;
+      }
+
+      div.addTag {
+        margin-top: 0;
+        display: flex;
+        align-items: center;
+      }
+
+      div.tags {
+        margin-top: 0;
+        display: flex;
+      }
+
+      paper-chip {
+        margin: 1px;
       }
     </style>
     <paper-dialog id="dialog" modal opened={{opened}}>
@@ -22,6 +39,15 @@
       <paper-input label="height" value={{bookmark.height}} type="number" allowed-pattern="\d"></paper-input>
       <span hidden$="[[!bookmark.isVimeo]]">Duration</span>
       <input id="duration" type="time" step="1" value={{bookmark.duration}} hidden$="[[!bookmark.isVimeo]]"/>
+      <div class="addTag">
+        <paper-button raised on-click="addTag">Add a tag</paper-button>
+        <paper-input id="tag"></paper-input>
+      </div>
+      <div class="tags">
+        <template id="tags" is="dom-repeat" items="[[bookmark.tags]]" as="tag">
+          <paper-chip>[[tag]]</paper-chip>
+        </template>
+      </div>
       <div class="buttons">
         <paper-button dialog-dismiss>Cancel</paper-button>
         <paper-button disabled$=[[!_isValid(bookmark.title,_validURL)]] on-click="_submit">Accept</paper-button>
@@ -70,7 +96,7 @@
           **/
           bookmark: {
             type: Object,
-            value: () => ({})
+            value: () => ({ tags: [] })
           },
 
           /**
@@ -97,7 +123,7 @@
       */
       _openedChanged (opened) {
         if (!opened) {
-          this.set('bookmark', {})
+          this.set('bookmark', { tags: [] })
         }
       }
 
@@ -159,6 +185,15 @@
         })
         this.set('opened', false)
         this.dispatchEvent(new CustomEvent('submit-bookmark', { detail: _bookmark }))
+      }
+
+      /**
+      * Add a tag
+      */
+      addTag () {
+        if (this.$.tag.value && this.bookmark.tags.findIndex(tag => tag === this.$.tag.value) === -1) {
+          this.push('bookmark.tags', this.$.tag.value)
+        }
       }
     }
 

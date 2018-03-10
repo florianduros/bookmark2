@@ -60,7 +60,7 @@
           modal.opened = true
           modal.bookmark = { title: 'a title', url: 'https://vimeo.com/250953833' }
           modal.shadowRoot.querySelectorAll('paper-button')[1].click()
-          assert.deepEqual(modal.bookmark, { isVimeo: false })
+          assert.deepEqual(modal.bookmark, { isVimeo: false, tags: [] })
           assert.isFalse(modal._validURL)
         })
       })
@@ -165,16 +165,19 @@
         })
       })
 
+      // submit button is the third
+      // 1: tag button
+      // 2: close button
       suite('submit button', () => {
         test('default', () => {
           const modal = fixture('modal')
-          assert.isNotNull(modal.shadowRoot.querySelectorAll('paper-button')[1].getAttribute('disabled'))
+          assert.isNotNull(modal.shadowRoot.querySelectorAll('paper-button')[2].getAttribute('disabled'))
         })
 
         test('button is not disabled', () => {
           const modal = fixture('modal')
           modal.set('bookmark', { title: 'title', url: 'http://flickr.com/12345' })
-          assert.isNull(modal.shadowRoot.querySelectorAll('paper-button')[1].getAttribute('disabled'))
+          assert.isNull(modal.shadowRoot.querySelectorAll('paper-button')[2].getAttribute('disabled'))
         })
 
         test('fire event on click', done => {
@@ -186,18 +189,18 @@
           new Promise(resolve => modal.addEventListener('submit-bookmark', resolve))
             .then(({ detail }) => {
               assert.deepEqual(detail, bookmark)
-              assert.deepEqual(modal.bookmark, { isVimeo: false })
+              assert.deepEqual(modal.bookmark, { isVimeo: false, tags: [] })
               done()
             })
             .catch(done)
-          modal.shadowRoot.querySelectorAll('paper-button')[1].click()
+          modal.shadowRoot.querySelectorAll('paper-button')[2].click()
         })
       })
 
       suite('input binding', () => {
         test('default', () => {
           const modal = fixture('modal')
-          assert.deepEqual(modal.bookmark, { isVimeo: false })
+          assert.deepEqual(modal.bookmark, { isVimeo: false, tags: [] })
         })
 
         test('all input', (done) => {
@@ -208,10 +211,40 @@
           modal.shadowRoot.querySelectorAll('paper-input').forEach((input, index) => { input.value = values[index] })
           modal.shadowRoot.querySelector('input').value = bookmark.duration
           modal.addEventListener('submit-bookmark', ({ detail }) => {
-            assert.deepEqual(detail, Object.assign(bookmark, { isVimeo: true }))
+            assert.deepEqual(detail, Object.assign(bookmark, { isVimeo: true, tags: [] }))
             done()
           })
-          modal.shadowRoot.querySelectorAll('paper-button')[1].click()
+          modal.shadowRoot.querySelectorAll('paper-button')[2].click()
+        })
+      })
+
+      suite('tag', () => {
+        test('default', () => {
+          const modal = fixture('modal')
+          assert.equal(modal.shadowRoot.querySelectorAll('paper-chip').length, 0)
+        })
+
+        test('rendering', () => {
+          const modal = fixture('modal')
+          modal.opened = true
+          assert.equal(modal.shadowRoot.querySelectorAll('paper-chip').length, 0)
+          modal.set('bookmark', { tags: ['tag1', 'tag2'] })
+          modal.$.tags.render()
+          assert.equal(modal.shadowRoot.querySelectorAll('paper-chip').length, 2)
+        })
+
+        test('add', () => {
+          const modal = fixture('modal')
+          const button = modal.shadowRoot.querySelector('paper-button')
+          const input = modal.shadowRoot.querySelectorAll('paper-input')[5]
+          modal.opened = true
+          button.click()
+          assert.deepEqual(modal.bookmark.tags, [])
+          input.value = 'tag'
+          button.click()
+          assert.deepEqual(modal.bookmark.tags, ['tag'])
+          button.click()
+          assert.deepEqual(modal.bookmark.tags, ['tag'])
         })
       })
     </script>
