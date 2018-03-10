@@ -12,6 +12,10 @@
         flex-direction: column;
       }
 
+      vaadin-grid {
+        height: auto;
+      }
+
       div.container {
         display: flex;
         justify-content: center;
@@ -79,7 +83,7 @@
           <div>[[item.height]]</div>
         </template>
       </vaadin-grid-column>
-      <vaadin-grid-column>
+      <vaadin-grid-column flex-grow="0.5">
         <template class="header">Tags</template>
         <template>
           <div class="tags">
@@ -138,7 +142,7 @@
           */
           offset: {
             type: Number,
-            value: 20
+            value: 10
           },
 
           /**

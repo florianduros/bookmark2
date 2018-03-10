@@ -22,9 +22,9 @@
 
       suite('app', () => {
         const bookmarks = [
-          { title: 'other', isVimeo: false, url: 'https://flickr.com/250953845', author: 'author3', duration: 'duration3', width: 800, height: 600 },
-          { title: 'title1', isVimeo: true, url: 'https://vimeo.com/250953833', author: 'author1', duration: 'duration1', width: 1920, height: 1080 },
-          { title: 'title2', isVimeo: false, url: 'https://flickr.com/250953833', author: 'author2', duration: 'duration2', width: 800, height: 600 }
+          { title: 'other', isVimeo: false, url: 'https://flickr.com/250953845', author: 'author3', duration: 'duration3', width: 800, height: 600, tags: [] },
+          { title: 'title1', isVimeo: true, url: 'https://vimeo.com/250953833', author: 'author1', duration: 'duration1', width: 1920, height: 1080, tags: ['tag'] },
+          { title: 'title2', isVimeo: false, url: 'https://flickr.com/250953833', author: 'author2', duration: 'duration2', width: 800, height: 600, tags: ['tag', 'other'] }
         ]
 
         let app
@@ -88,9 +88,20 @@
           const input = app.shadowRoot.querySelector('paper-input')
           input.value = 'TITLE'
           assert.equal(app.currentBookmarks.length, 2)
-          input.value = '1'
-          assert.equal(app.currentBookmarks.length, 1)
-          assert.equal(app.currentBookmarks[0].title, 'title1')
+        })
+
+        test('filter on tag', () => {
+          bookmarks.forEach(bookmark => addBookmark(bookmark, app))
+          const input = app.shadowRoot.querySelector('paper-input')
+          input.value = 'tag'
+          assert.equal(app.currentBookmarks.length, 2)
+        })
+
+        test('filter on title and tag', () => {
+          bookmarks.forEach(bookmark => addBookmark(bookmark, app))
+          const input = app.shadowRoot.querySelector('paper-input')
+          input.value = 'other'
+          assert.equal(app.currentBookmarks.length, 2)
           input.value = ''
           assert.equal(app.currentBookmarks.length, 3)
         })
@@ -102,55 +113,67 @@
           assert.equal(app.currentBookmarks.length, 2)
         })
 
-        const removeBookmark = (id, app) => {
-          (app.shadowRoot.querySelector('bookmark-table'))
-            .dispatchEvent(new CustomEvent('remove-bookmark', { detail: id }))
-        }
+        suite('remove and set bookmark', () => {
+          const removeBookmark = (id, app, elt) => {
+            (app.shadowRoot.querySelector(elt))
+              .dispatchEvent(new CustomEvent('remove-bookmark', { detail: id }))
+          }
 
-        test('remove bookmark', () => {
-          const [bookmark] = bookmarks
-          addBookmark(bookmark, app)
-          removeBookmark(app.getState().bookmarks[0].id, app)
-          assert.equal(app.bookmarks.length, 0)
-          assert.equal(app.currentBookmarks.length, 0)
-        })
+          const setBookmark = (id, app, elt) => {
+            (app.shadowRoot.querySelector(elt))
+              .dispatchEvent(new CustomEvent('set-bookmark', { detail: id }))
+          }
 
-        test('remove two bookmarks', () => {
-          bookmarks.forEach(bookmark => addBookmark(bookmark, app))
-          removeBookmark(app.getState().bookmarks[0].id, app)
-          assert.equal(app.bookmarks.length, 2)
-          assert.equal(app.currentBookmarks.length, 2)
-          assert.equal(app.currentBookmarks[0].title, 'title1')
-          removeBookmark(app.getState().bookmarks[1].id, app)
-          assert.equal(app.bookmarks.length, 1)
-          assert.equal(app.currentBookmarks.length, 1)
-          assert.equal(app.currentBookmarks[0].title, 'title1')
-        })
+          const testAll = elt => {
+            test('remove bookmark', () => {
+              const [bookmark] = bookmarks
+              addBookmark(bookmark, app)
+              removeBookmark(app.getState().bookmarks[0].id, app, elt)
+              assert.equal(app.bookmarks.length, 0)
+              assert.equal(app.currentBookmarks.length, 0)
+            })
 
-        const setBookmark = (id, app) => {
-          (app.shadowRoot.querySelector('bookmark-table'))
-            .dispatchEvent(new CustomEvent('set-bookmark', { detail: id }))
-        }
+            test('remove two bookmarks', () => {
+              bookmarks.forEach(bookmark => addBookmark(bookmark, app))
+              removeBookmark(app.getState().bookmarks[0].id, app, elt)
+              assert.equal(app.bookmarks.length, 2)
+              assert.equal(app.currentBookmarks.length, 2)
+              assert.equal(app.currentBookmarks[0].title, 'title1')
+              removeBookmark(app.getState().bookmarks[1].id, app, elt)
+              assert.equal(app.bookmarks.length, 1)
+              assert.equal(app.currentBookmarks.length, 1)
+              assert.equal(app.currentBookmarks[0].title, 'title1')
+            })
 
-        test('set bookmark', () => {
-          const [bookmark] = bookmarks
-          addBookmark(bookmark, app)
-          setBookmark(app.getState().bookmarks[0].id, app)
-          assert.deepEqual(app.currentBookmark, app.getState().bookmarks[0])
-          assert.isTrue(app.$.setModal.opened)
-          app.$.setModal.bookmark.url = 'new url'
-          app.$.setModal._submit()
-          assert.equal(app.getState().bookmarks[0].url, 'new url')
-          assert.isFalse(app.$.setModal.opened)
-        })
+            test('set bookmark', () => {
+              const [bookmark] = bookmarks
+              addBookmark(bookmark, app)
+              setBookmark(app.getState().bookmarks[0].id, app, elt)
+              assert.deepEqual(app.currentBookmark, app.getState().bookmarks[0])
+              assert.isTrue(app.$.setModal.opened)
+              app.$.setModal.bookmark.url = 'new url'
+              app.$.setModal._submit()
+              assert.equal(app.getState().bookmarks[0].url, 'new url')
+              assert.isFalse(app.$.setModal.opened)
+            })
 
-        test('close on set bookmark modal doesnt alterate the current bookmark', () => {
-          const [bookmark] = bookmarks
-          addBookmark(bookmark, app)
-          setBookmark(app.getState().bookmarks[0].id, app)
-          app.$.setModal.bookmark.url = 'new url'
-          app.$.setModal.opened = false
-          assert.deepEqual(app.currentBookmark, app.getState().bookmarks[0])
+            test('close on set bookmark modal doesnt alterate the current bookmark', () => {
+              const [bookmark] = bookmarks
+              addBookmark(bookmark, app)
+              setBookmark(app.getState().bookmarks[0].id, app, elt)
+              app.$.setModal.bookmark.url = 'new url'
+              app.$.setModal.opened = false
+              assert.deepEqual(app.currentBookmark, app.getState().bookmarks[0])
+            })
+          }
+
+          suite('table', () => {
+            testAll('bookmark-table')
+          })
+
+          suite('list', () => {
+            testAll('bookmark-list')
+          })
         })
       })
     </script>

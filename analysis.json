@@ -483,11 +483,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 119,
+              "line": 123,
               "column": 10
             },
             "end": {
-              "line": 123,
+              "line": 127,
               "column": 11
             }
           },
@@ -505,11 +505,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 129,
+              "line": 133,
               "column": 10
             },
             "end": {
-              "line": 132,
+              "line": 136,
               "column": 11
             }
           },
@@ -525,18 +525,18 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 138,
+              "line": 142,
               "column": 10
             },
             "end": {
-              "line": 141,
+              "line": 145,
               "column": 11
             }
           },
           "metadata": {
             "polymer": {}
           },
-          "defaultValue": "20"
+          "defaultValue": "10"
         },
         {
           "name": "currentPage",
@@ -545,11 +545,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 147,
+              "line": 151,
               "column": 10
             },
             "end": {
-              "line": 151,
+              "line": 155,
               "column": 11
             }
           },
@@ -567,11 +567,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 157,
+              "line": 161,
               "column": 10
             },
             "end": {
-              "line": 160,
+              "line": 164,
               "column": 11
             }
           },
@@ -588,11 +588,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 168,
+              "line": 172,
               "column": 6
             },
             "end": {
-              "line": 175,
+              "line": 179,
               "column": 7
             }
           },
@@ -609,11 +609,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 181,
+              "line": 185,
               "column": 6
             },
             "end": {
-              "line": 184,
+              "line": 188,
               "column": 7
             }
           },
@@ -630,11 +630,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 192,
+              "line": 196,
               "column": 6
             },
             "end": {
-              "line": 194,
+              "line": 198,
               "column": 7
             }
           },
@@ -651,11 +651,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 202,
+              "line": 206,
               "column": 6
             },
             "end": {
-              "line": 204,
+              "line": 208,
               "column": 7
             }
           },
@@ -677,11 +677,11 @@
       "metadata": {},
       "sourceRange": {
         "start": {
-          "line": 108,
+          "line": 112,
           "column": 4
         },
         "end": {
-          "line": 205,
+          "line": 209,
           "column": 5
         }
       },
@@ -694,11 +694,11 @@
           "description": "Bookmark list",
           "sourceRange": {
             "start": {
-              "line": 119,
+              "line": 123,
               "column": 10
             },
             "end": {
-              "line": 123,
+              "line": 127,
               "column": 11
             }
           },
@@ -710,11 +710,11 @@
           "description": "Bookmarks in the current page",
           "sourceRange": {
             "start": {
-              "line": 129,
+              "line": 133,
               "column": 10
             },
             "end": {
-              "line": 132,
+              "line": 136,
               "column": 11
             }
           },
@@ -726,11 +726,11 @@
           "description": "Number of bookmark to display by page",
           "sourceRange": {
             "start": {
-              "line": 138,
+              "line": 142,
               "column": 10
             },
             "end": {
-              "line": 141,
+              "line": 145,
               "column": 11
             }
           },
@@ -742,11 +742,11 @@
           "description": "Current displayed page",
           "sourceRange": {
             "start": {
-              "line": 147,
+              "line": 151,
               "column": 10
             },
             "end": {
-              "line": 151,
+              "line": 155,
               "column": 11
             }
           },
@@ -758,11 +758,11 @@
           "description": "Total number of pages",
           "sourceRange": {
             "start": {
-              "line": 157,
+              "line": 161,
               "column": 10
             },
             "end": {
-              "line": 160,
+              "line": 164,
               "column": 11
             }
           },
@@ -792,6 +792,136 @@
       "tagname": "bookmark-table"
     },
     {
+      "description": "List to display bookmarks\n\n```\n<bookmark-list bookmarks=[[bookmarks]]></bookmark-list>\n```",
+      "summary": "",
+      "path": "src\\bookmark-list.html",
+      "properties": [
+        {
+          "name": "bookmarks",
+          "type": "Array.<{title: string, url: string, author: string, width: integer, height: integer, duration: string}>",
+          "description": "Bookmark list",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 125,
+              "column": 10
+            },
+            "end": {
+              "line": 128,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "[]"
+        }
+      ],
+      "methods": [
+        {
+          "name": "_dispatchRemove",
+          "description": "Fire `remove-bookmark` event",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 138,
+              "column": 6
+            },
+            "end": {
+              "line": 140,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "{model}"
+            }
+          ]
+        },
+        {
+          "name": "_dispatchEdit",
+          "description": "Fire `edit-bookmark` event",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 148,
+              "column": 6
+            },
+            "end": {
+              "line": 150,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "{model}"
+            }
+          ]
+        }
+      ],
+      "staticMethods": [],
+      "demos": [
+        {
+          "url": "demo/bookmark-list.html",
+          "description": ""
+        }
+      ],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 114,
+          "column": 4
+        },
+        "end": {
+          "line": 151,
+          "column": 5
+        }
+      },
+      "privacy": "public",
+      "superclass": "HTMLElement",
+      "name": "BookmarkList",
+      "attributes": [
+        {
+          "name": "bookmarks",
+          "description": "Bookmark list",
+          "sourceRange": {
+            "start": {
+              "line": 125,
+              "column": 10
+            },
+            "end": {
+              "line": 128,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "Array.<{title: string, url: string, author: string, width: integer, height: integer, duration: string}>"
+        }
+      ],
+      "events": [
+        {
+          "type": "CustomEvent",
+          "name": "edit-bookmark",
+          "description": "edit-bookmark",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "remove-bookmark",
+          "description": "remove-bookmark",
+          "metadata": {}
+        }
+      ],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [],
+      "tagname": "bookmark-list"
+    },
+    {
       "description": "Display bookmarks in a table or a list. Connected to a redux store.\n\n```\n<bookmark-app></bookmark-app>\n```",
       "summary": "",
       "path": "src\\bookmark-app.html",
@@ -803,11 +933,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 136,
+              "line": 137,
               "column": 10
             },
             "end": {
-              "line": 139,
+              "line": 140,
               "column": 11
             }
           },
@@ -823,11 +953,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 145,
+              "line": 146,
               "column": 10
             },
             "end": {
-              "line": 150,
+              "line": 151,
               "column": 11
             }
           },
@@ -845,11 +975,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 157,
+              "line": 158,
               "column": 10
             },
             "end": {
-              "line": 163,
+              "line": 164,
               "column": 11
             }
           },
@@ -868,11 +998,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 169,
+              "line": 170,
               "column": 10
             },
             "end": {
-              "line": 172,
+              "line": 173,
               "column": 11
             }
           },
@@ -888,11 +1018,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 178,
+              "line": 179,
               "column": 10
             },
             "end": {
-              "line": 181,
+              "line": 182,
               "column": 11
             }
           },
@@ -908,11 +1038,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 187,
+              "line": 188,
               "column": 10
             },
             "end": {
-              "line": 191,
+              "line": 192,
               "column": 11
             }
           },
@@ -931,11 +1061,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 200,
+              "line": 201,
               "column": 6
             },
             "end": {
-              "line": 202,
+              "line": 203,
               "column": 7
             }
           },
@@ -948,15 +1078,15 @@
         },
         {
           "name": "_computeBookmarks",
-          "description": "Compute the current bookmarks. The bookmarks are filtered by the search value on the titles",
+          "description": "Compute the current bookmarks. The bookmarks are filtered by the search value on the titles and the tag",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 207,
+              "line": 208,
               "column": 6
             },
             "end": {
-              "line": 211,
+              "line": 213,
               "column": 7
             }
           },
@@ -969,11 +1099,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 216,
+              "line": 218,
               "column": 6
             },
             "end": {
-              "line": 218,
+              "line": 220,
               "column": 7
             }
           },
@@ -986,11 +1116,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 224,
+              "line": 226,
               "column": 6
             },
             "end": {
-              "line": 229,
+              "line": 231,
               "column": 7
             }
           },
@@ -1007,11 +1137,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 235,
+              "line": 237,
               "column": 6
             },
             "end": {
-              "line": 238,
+              "line": 240,
               "column": 7
             }
           },
@@ -1028,11 +1158,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 244,
+              "line": 246,
               "column": 6
             },
             "end": {
-              "line": 246,
+              "line": 248,
               "column": 7
             }
           },
@@ -1049,11 +1179,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 252,
+              "line": 254,
               "column": 6
             },
             "end": {
-              "line": 254,
+              "line": 256,
               "column": 7
             }
           },
@@ -1070,11 +1200,11 @@
       "metadata": {},
       "sourceRange": {
         "start": {
-          "line": 125,
+          "line": 126,
           "column": 4
         },
         "end": {
-          "line": 255,
+          "line": 257,
           "column": 5
         }
       },
@@ -1087,11 +1217,11 @@
           "description": "Header title",
           "sourceRange": {
             "start": {
-              "line": 136,
+              "line": 137,
               "column": 10
             },
             "end": {
-              "line": 139,
+              "line": 140,
               "column": 11
             }
           },
@@ -1103,11 +1233,11 @@
           "description": "Current page",
           "sourceRange": {
             "start": {
-              "line": 145,
+              "line": 146,
               "column": 10
             },
             "end": {
-              "line": 150,
+              "line": 151,
               "column": 11
             }
           },
@@ -1119,11 +1249,11 @@
           "description": "Bookmak list.\nBind to bookmarks redux state",
           "sourceRange": {
             "start": {
-              "line": 157,
+              "line": 158,
               "column": 10
             },
             "end": {
-              "line": 163,
+              "line": 164,
               "column": 11
             }
           },
@@ -1135,11 +1265,11 @@
           "description": "Filtered bookmarks (by search value)",
           "sourceRange": {
             "start": {
-              "line": 169,
+              "line": 170,
               "column": 10
             },
             "end": {
-              "line": 172,
+              "line": 173,
               "column": 11
             }
           },
@@ -1151,11 +1281,11 @@
           "description": "Current edited bookmark",
           "sourceRange": {
             "start": {
-              "line": 178,
+              "line": 179,
               "column": 10
             },
             "end": {
-              "line": 181,
+              "line": 182,
               "column": 11
             }
           },
@@ -1167,11 +1297,11 @@
           "description": "Current search valuve",
           "sourceRange": {
             "start": {
-              "line": 187,
+              "line": 188,
               "column": 10
             },
             "end": {
-              "line": 191,
+              "line": 192,
               "column": 11
             }
           },

@@ -15,6 +15,7 @@
 <link rel="import" href="bookmark-dispatcher.html">
 <link rel="import" href="bookmark-modal.html">
 <link rel="import" href="bookmark-table.html">
+<link rel="import" href="bookmark-list.html">
 
 <dom-module id="bookmark-app">
   <template>
@@ -104,7 +105,7 @@
             fallback-selection="view404"
             role="main">
             <bookmark-table name="table" bookmarks="[[currentBookmarks]]" on-remove-bookmark="removeBookmark" on-set-bookmark="showEditModal"></bookmark-table>
-            <span name="list">list</span>
+            <bookmark-list name="list" bookmarks="[[currentBookmarks]]" on-remove-bookmark="removeBookmark" on-set-bookmark="showEditModal"></bookmark-list>
           </iron-pages>
           <paper-fab icon="add" on-click="showAddModal"></paper-fab>
         </app-header-layout>
@@ -203,12 +204,13 @@
       }
 
       /**
-      * Compute the current bookmarks. The bookmarks are filtered by the search value on the titles
+      * Compute the current bookmarks. The bookmarks are filtered by the search value on the titles and the tag
       */
       _computeBookmarks () {
-        this.currentBookmarks = this.bookmarks
-          .filter(({ title }) => title.toLowerCase().includes(this.searchValue.toLowerCase()))
-          .map(bookmark => Object.assign({}, bookmark))
+        const searchValue = this.searchValue.toLowerCase()
+        this.set('currentBookmarks', this.bookmarks
+          .filter(({ title, tags }) => title.toLowerCase().includes(searchValue) || tags.some(tag => tag.toLowerCase().includes(searchValue)))
+          .map(bookmark => Object.assign({}, bookmark)))
       }
 
       /**

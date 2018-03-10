@@ -1,0 +1,155 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-chip/paper-chip.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<dom-module id="bookmark-list">
+  <template>
+    <style>
+      :host {
+        display: flex;
+      }
+
+      .cards {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+      }
+
+      div.card-container {
+        display: flex;
+      }
+
+      paper-card {
+        margin: 10px;
+        width: 100%;
+      }
+
+      img {
+        width: 42px;
+      }
+
+      div.card-content {
+        font-size: 13px;
+      }
+
+      div.header {
+        font-size: 16px;
+        margin-bottom: 5px;
+      }
+
+      a {
+       text-decoration: none;
+      }
+
+      span.author {
+        font-size: 14px;
+        color: #757575
+      }
+
+      div.action {
+        float: right;
+        font-size: 15px;
+        vertical-align: middle;
+      }
+
+      div.tags {
+        margin-top: 10px;
+        display: flex;
+      }
+
+      paper-chip {
+        margin: 1px;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+    </style>
+
+    <div class="cards" >
+      <template is="dom-repeat" items="[[bookmarks]]" as="bookmark">
+        <div class="card-container">
+          <paper-card>
+            <div class="card-content">
+              <div class="header">
+                <img src="data/flickr.png" hidden$="[[bookmark.isVimeo]]"/>
+                <img src="data/vimeo.png" hidden$="[[!bookmark.isVimeo]]"/>
+                <a href="[[bookmark.url]]">[[bookmark.title]]</a>
+                <span class="author">[[bookmark.author]]</span>
+                <div class="action">
+                  <iron-icon icon="create" on-click="_dispatchEdit"></iron-icon>
+                  <iron-icon icon="delete" on-click="_dispatchRemove"></iron-icon>
+                </div>
+              </div>
+              [[bookmark.duration]]
+              <div hidden$=[[!bookmark.width]] style="display: inline-block;">
+                Width [[bookmark.width]]
+              </div>
+              <div hidden$=[[!bookmark.height]] style="display: inline-block;">
+                Height [[bookmark.height]]
+              </div>
+              <div class="tags">
+                <template id="tags" is="dom-repeat" items="[[bookmark.tags]]" as="tag">
+                  <paper-chip>[[tag]]</paper-chip>
+                </template>
+              </div>
+            </div>
+          </paper-card>
+        </div>
+      </template>
+  </div>
+  </template>
+  <script>
+    /**
+    * List to display bookmarks
+    *
+    * ```
+    * <bookmark-list bookmarks=[[bookmarks]]></bookmark-list>
+    * ```
+    * @customElement
+    * @polymer
+    * @extends {Polymer.Element}
+    * @demo demo/bookmark-list.html
+    */
+    class BookmarkList extends Polymer.Element {
+      static get is () {
+        return 'bookmark-list'
+      }
+
+      static get properties () {
+        return {
+          /**
+          * Bookmark list
+          * @type {Array<{ title: string, url: string, author: string, width: integer, height: integer, duration: string }>}
+          */
+          bookmarks: {
+            type: Array,
+            value: () => ([])
+          }
+        }
+      }
+
+      /**
+      * Fire `remove-bookmark` event
+      *
+      * @event remove-bookmark
+      * @param {String} bookmark id
+      */
+      _dispatchRemove ({ model }) {
+        this.dispatchEvent(new CustomEvent('remove-bookmark', { detail: model.bookmark.id }))
+      }
+
+      /**
+      * Fire `edit-bookmark` event
+      *
+      * @event edit-bookmark
+      * @param {String} bookmark id
+      */
+      _dispatchEdit ({ model }) {
+        this.dispatchEvent(new CustomEvent('set-bookmark', { detail: model.bookmark.id }))
+      }
+    }
+    window.customElements.define(BookmarkList.is, BookmarkList)
+  </script>
+</dom-module>

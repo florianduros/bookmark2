@@ -2,8 +2,7 @@
   "builds": [{ "preset": "es6-bundled" }],
   "fragments": ["index.html"],
   "lint": {
-    "rules": ["polymer-2"],
-    "ignoreWarnings": ["undefined-elements"]
+    "rules": ["polymer-2"]
   },
   "sources": [
     "src/**/*",

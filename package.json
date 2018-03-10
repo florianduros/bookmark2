@@ -10,7 +10,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build/es6-bundled",
     "doc": "polymer analyze > analysis.json",
-    "lint": "polymer lint -i src/bookmark-dispatcher.html src/bookmark-modal.html src/bookmark-app.html src/bookmark-table.html && eslint . --ext .js,.html",
+    "lint": "polymer lint -i src/bookmark-dispatcher.html src/bookmark-list.html src/bookmark-modal.html src/bookmark-app.html src/bookmark-table.html && eslint . --ext .js,.html",
     "test": "polymer test",
     "start:build": "polymer serve -H 0.0.0.0 -p 8081"
   },

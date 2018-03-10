@@ -23,6 +23,7 @@
       suite('pagination', () => {
         test('default', () => {
           const table = fixture('table')
+          assert.equal(table.offset, 10)
           assert.equal(table.bookmarks.length, 0)
           assert.equal(table.currentBookmarks.length, 0)
           assert.equal(table.pageCount, 1)
@@ -190,11 +191,11 @@
           ]
           const cells = await getCells(table)
 
-          // Get the delete button of the first row
+          // Get the edit button of the first row
           const firstEditButton = cells[0].querySelectorAll('paper-icon-button')[0]
           await verifyEvent('set-bookmark', bookmark => assert.equal(bookmark, 'id1'), firstEditButton, table)
 
-          // Get the delete button of the second row
+          // Get the edit button of the second row
           const secondEditButton = cells[9].querySelectorAll('paper-icon-button')[0]
           await verifyEvent('set-bookmark', bookmark => assert.equal(bookmark, 'id2'), secondEditButton, table)
         })

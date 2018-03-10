@@ -3,13 +3,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>bookmark-table demo</title>
+    <title>bookmark-list demo</title>
 
     <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
     <link rel="import" href="../bower_components/polymer/lib/elements/dom-bind.html">
     <link rel="import" href="../bower_components/iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../bower_components/iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../src/bookmark-table.html">
+    <link rel="import" href="../src/bookmark-list.html">
   </head>
 
   <body>
@@ -19,6 +19,10 @@
         flex-direction: column;
         font-family: 'Roboto', 'Noto', sans-serif;
       }
+
+      bookmark-list {
+        background-color: #F5F5F5;
+      }
     </style>
     <demo-snippet>
       <template>
@@ -26,7 +30,7 @@
           <template>
             <style>
             </style>
-            <bookmark-table bookmarks=[[bookmarks]] offset="5"></bookmark-table>
+            <bookmark-list bookmarks="[[bookmarks]]"></bookmark-list>
             <script>
               'use strict'
 
