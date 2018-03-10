@@ -4,5 +4,15 @@
   "lint": {
     "rules": ["polymer-2"],
     "ignoreWarnings": ["undefined-elements"]
-  }
+  },
+  "sources": [
+    "src/**/*",
+    "data/**/*"
+   ],
+   "extraDependencies": [
+    "favicon.ico",
+    "manifest.json",
+    "bower_components/webcomponentsjs/*.js",
+    "bower_components/webcomponentsjs/*.map"
+  ]
 }

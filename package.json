@@ -7,6 +7,8 @@
     "start": "polymer serve -H 0.0.0.0 -p 8080",
     "postinstall": "polymer install",
     "build": "polymer build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build/es6-bundled",
     "doc": "polymer analyze > analysis.json",
     "lint": "polymer lint -i src/bookmark-dispatcher.html src/bookmark-modal.html src/bookmark-app.html src/bookmark-table.html && eslint . --ext .js,.html",
     "test": "polymer test",
@@ -21,6 +23,7 @@
     "eslint-plugin-node": "^6.0.1",
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
+    "gh-pages": "^1.1.0",
     "polymer-cli": "^1.6.0"
   }
 }

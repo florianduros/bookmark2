@@ -14,6 +14,7 @@
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="bookmark-dispatcher.html">
 <link rel="import" href="bookmark-modal.html">
+<link rel="import" href="bookmark-table.html">
 
 <dom-module id="bookmark-app">
   <template>
@@ -104,7 +105,6 @@
             role="main">
             <bookmark-table name="table" bookmarks="[[currentBookmarks]]" on-remove-bookmark="removeBookmark" on-set-bookmark="showEditModal"></bookmark-table>
             <span name="list">list</span>
-            <span name="view404">Unable to display the bookmarks</span>
           </iron-pages>
           <paper-fab icon="add" on-click="showAddModal"></paper-fab>
         </app-header-layout>
@@ -200,22 +200,6 @@
       */
       _pageChanged (page) {
         this.title = page === 'table' ? 'Table' : 'List'
-        // Load page import on demand. Show 404 page if fails
-        if (page !== 'view404') {
-          const resolvedPageUrl = this.resolveUrl(`bookmark-${page}.html`)
-          Polymer.importHref(
-            resolvedPageUrl,
-            null,
-            this._showPage404.bind(this),
-            true)
-        }
-      }
-
-      /**
-      * Display the 404 page
-      */
-      _showPage404 () {
-        this.page = 'view404'
       }
 
       /**
