@@ -246,6 +246,17 @@
           button.click()
           assert.deepEqual(modal.bookmark.tags, ['tag'])
         })
+
+        test('remove', () => {
+          const modal = fixture('modal')
+          modal.opened = true
+          modal.set('bookmark', { tags: ['tag1', 'tag2'] })
+          modal.$.tags.render()
+          modal.shadowRoot.querySelector('iron-icon').click()
+          assert.deepEqual(modal.bookmark.tags, ['tag2'])
+          modal.shadowRoot.querySelector('iron-icon').click()
+          assert.deepEqual(modal.bookmark.tags, [])
+        })
       })
     </script>
   </body>

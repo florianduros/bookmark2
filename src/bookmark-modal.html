@@ -3,6 +3,7 @@
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-chip/paper-chip.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <dom-module id="bookmark-modal">
   <template>
     <style>
@@ -28,6 +29,9 @@
 
       paper-chip {
         margin: 1px;
+        height: 40px;
+        display: flex;
+        align-items: center;
       }
     </style>
     <paper-dialog id="dialog" modal opened={{opened}}>
@@ -40,12 +44,12 @@
       <span hidden$="[[!bookmark.isVimeo]]">Duration</span>
       <input id="duration" type="time" step="1" value={{bookmark.duration}} hidden$="[[!bookmark.isVimeo]]"/>
       <div class="addTag">
-        <paper-button raised on-click="addTag">Add a tag</paper-button>
+        <paper-button raised on-click="_addTag">Add a tag</paper-button>
         <paper-input id="tag"></paper-input>
       </div>
       <div class="tags">
         <template id="tags" is="dom-repeat" items="[[bookmark.tags]]" as="tag">
-          <paper-chip>[[tag]]</paper-chip>
+          <paper-chip>[[tag]]<iron-icon icon="icons:cancel" on-click="_removeTag"></iron-icon></paper-chip>
         </template>
       </div>
       <div class="buttons">
@@ -190,10 +194,18 @@
       /**
       * Add a tag
       */
-      addTag () {
+      _addTag () {
         if (this.$.tag.value && this.bookmark.tags.findIndex(tag => tag === this.$.tag.value) === -1) {
           this.push('bookmark.tags', this.$.tag.value)
         }
+      }
+
+      /**
+      * Remove a tag
+      * @param {object} evt
+      */
+      _removeTag ({ model }) {
+        this.splice('bookmark.tags', model.index, 1)
       }
     }
 
